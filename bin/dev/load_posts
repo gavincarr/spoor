@@ -1,0 +1,23 @@
+#!/usr/bin/perl
+#
+# Load a bunch of posts in 'timestamp post' format into db
+#
+
+use strict;
+use lib "$ENV{MICROBE_HOME}/lib";
+use Microbe::Util qw(get_schema);
+use Time::Piece;
+
+my $schema = get_schema;
+
+while (<>) {
+  my ($date, $time, $post) = split / /, $_, 3;
+  my $ts = "$date $time";
+  chomp $post;
+
+  $schema->resultset('Post')->create({
+    post_raw    => $post,
+    timestamp   => $ts,
+  }) or die "Create failed: $!";
+}
+

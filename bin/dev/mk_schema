@@ -1,0 +1,8 @@
+#!/bin/sh
+SPOOR_HOME=/home/gavin/work/spoor
+dbicdump \
+  -o dump_directory=$SPOOR_HOME/lib \
+  -o use_namespaces=1 \
+  -o resultset_namespace=ResultSet \
+  -o overwrite_modifications=1 \
+  Spoor::Schema dbi:SQLite:dbname=$SPOOR_HOME/var/spoor.db 

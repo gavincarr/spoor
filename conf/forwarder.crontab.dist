@@ -1,0 +1,9 @@
+SPOOR_HOME=/path/to/spoor
+
+# Run spoor forwarders every minute (uncomment to activate)
+#* * * * * $SPOOR_HOME/bin/forwarder_identica
+#* * * * * $SPOOR_HOME/bin/forwarder_twitter
+#* * * * * $SPOOR_HOME/bin/forwarder_delicious
+
+# vim:ft=crontab
+

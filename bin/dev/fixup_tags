@@ -1,0 +1,35 @@
+#!/usr/bin/perl
+#
+# Walk all posts, re-extracting target hashtags, and creating any post_tag
+#   entries that are missing in the database
+#
+
+use strict;
+use lib "$ENV{MICROBE_HOME}/lib";
+use Microbe::Config;
+use Microbe::Util qw(get_schema extract_target_hashtags);
+use Text::Microblog qw(extract_hashtags);
+
+my $schema = get_schema;
+
+my $rs = $schema->resultset('Post')->search;
+
+# extract_target_hashtags version
+#while (my $post = $rs->next) {
+#  if (my @tags = extract_target_hashtags($schema, $post->post_raw)) {
+#    for my $tag (@tags) {
+#      $schema->resultset('PostTag')->find_or_create({
+#        post_id   => $post->id,
+#        tag_id    => $tag->id,
+#      }) 
+#      or die "PostTag find_or_create failed";
+#    }
+#  }
+#}
+
+# extract_hashtags version
+my $config = Microbe::Config->new;
+while (my $post = $rs->next) {
+  $post->extract_and_create_hashtags($config);
+}
+

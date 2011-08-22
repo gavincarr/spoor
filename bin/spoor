@@ -1,0 +1,313 @@
+#!/usr/bin/perl
+#
+# Spoor web service
+#
+# - accept posts via an api (json messages via HTTP POSTs)
+# - simple interfaces for post listing and display (html and atom)
+#
+
+use strict;
+use JSON::Any;
+use Template;
+use XML::Atom::Feed;
+use XML::Atom::Entry;
+use Encode;
+use URI;
+
+use FindBin qw($Bin);
+use lib "$Bin/../lib";
+use Spoor::Config;
+use Spoor::Util qw(get_schema ts2iso8601_offset);
+
+# -------------------------------------------------------------------------
+# Config
+
+set appdir      => "$Bin/..";
+set views       => path($Bin, '..', 'root', 'templates');
+set public      => path($Bin, '..', 'root', 'static');
+
+my $config = Spoor::Config->new;
+my $spoor_url = $config->get('url')
+  or die "Missing 'url' setting in spoor.conf\n";
+my $schema = get_schema($config->{environment});
+
+my %format = map { $_ => 1 } qw(html atom json);
+my %render = (
+  atom => sub {
+    my ($posts, %opt) = @_;
+
+    $XML::Atom::DefaultVersion = "1.0";
+
+    my $new_feed = sub {
+      my $feed = XML::Atom::Feed->new;
+      $feed->title($opt{title} || "Spoor Posts");
+      $feed->id($opt{url} || "${spoor_url}/atom");
+      return $feed;
+    };
+    my $feed = $new_feed->();
+
+    for my $post (@$posts) {
+      # If we find a post that is paused, reset the feed and start again with next
+      if ($post->pause_b) {
+        $feed = $new_feed->();
+        next;
+      }
+
+      my $id = $post->id;
+      my $entry = XML::Atom::Entry->new;
+      $entry->id("${spoor_url}/post/$id");
+      $entry->title($post->post_processed);
+      $entry->content($post->post_processed);
+      $entry->published(ts2iso8601_offset($post->timestamp, $config->get('publish_delay') || 180));
+      $feed->add_entry($entry);
+    }
+
+    content_type 'text/xml';
+    $feed->as_xml;
+  },
+);
+
+# -------------------------------------------------------------------------
+# Utility routines
+
+sub bad_request  { status 403; return $_[0] }
+sub system_error { status 500; return $_[0] }
+
+# -------------------------------------------------------------------------
+# Top-level GET routes
+#
+# GET /
+# GET /{atom,rss,json}
+# GET /tag/<tag>
+# GET /tag/<tag>/<format>
+
+# Debug route
+get '/config' => sub {
+  pass unless config->{environment} =~ m/^(development|test)$/;
+  template 'config' => { config => config() };
+};
+
+sub render_template {
+  my ($rs, $format) = @_;
+  my $param = { rs => $rs };
+  $param->{js_list} = [ qw(post.js) ] if $format eq 'html';
+  $param->{publish_delay} = ($config->get('publish_delay') || 180) + 30;
+  $param->{ts_cutoff_epoch} = time - $param->{publish_delay};
+  template "list_$format" => $param;
+}
+
+sub list_all {
+  my $format = shift;
+
+  my @rs = $schema->resultset('Post')->search({
+    delete_b    => 0,
+  }, { 
+    order_by    => 'timestamp desc',
+    rows        => $config->get('display_limit') || 100,
+  })->all;
+  return '' unless @rs;
+
+  return $render{$format}->(\@rs) 
+    if exists $render{$format};
+
+  return render_template(\@rs, $format);
+}
+
+sub list_by_tag {
+  my ($tag, $format) = @_;
+
+  my @rs = $schema->resultset('Post')->search({
+      'tag.type'    => '#',
+      'tag.tag'     => $tag,
+      delete_b      => 0,
+    }, { 
+      order_by      => 'timestamp desc',
+      join          => { 'post_tags' => 'tag' },
+      rows          => $config->get('display_limit') || 100,
+    })->all;
+  return '' unless @rs;
+
+  return $render{$format}->(\@rs, 
+      title => "Spoor Posts #$tag", 
+      url => "$spoor_url/tag/$tag" . ($format eq 'html' ? '' : "/$format"),
+    ) 
+    if exists $render{$format};
+
+  return render_template(\@rs, $format);
+}
+
+# list all posts
+get '/?' => sub {
+  list_all 'html';
+};
+get '/:format' => sub {
+  my $format = params->{format} || 'html';
+  unless ($format{$format}) {
+    status 403;
+    return template "error" => { error => "Invalid format '$format'" };
+  }
+  list_all $format;
+};
+
+# list posts by tag
+get '/tag/:tag' => sub {
+  my $tag = params->{tag};
+  list_by_tag $tag, 'html';
+};
+get '/tag/:tag/:format' => sub {
+  my $tag = params->{tag};
+  my $format = params->{format} || 'html';
+  unless ($format{$format}) {
+    status 403;
+    return template "error" => { error => "Invalid format '$format'" };
+  }
+  list_by_tag $tag, $format;
+};
+
+# -------------------------------------------------------------------------
+# api POST routes
+
+# Top-level api route, accepting json/xml posts via POST
+sub api_post {
+# debug Dump scalar params;
+  my $text = params->{post} || params->{status} || '';
+
+  if ($text eq '') {
+    error "No post parameter found";
+    return bad_request({ error => "No 'post/status' parameter given?" });
+  }
+
+  my $post_content = Encode::decode_utf8($text);
+  debug "Post is good, about to create: $post_content\n";
+  my $post = $schema->resultset('Post')->create({
+    post_raw => $post_content,
+  }) or return system_error({ error => "Creating post failed" });
+
+  my $post_url = "${spoor_url}/post/" . $post->id;
+  if (config->{environment} eq 'test') {
+    my $uri = URI->new($post_url);
+    $uri->port(config->{port});
+    $post_url = $uri->canonical->as_string;
+  }
+
+  status 200;
+  if (request->content_type eq 'application/json' || request->content_type eq 'text/xml') {
+    return { 
+      status => {
+        id => $post->id,
+        text => $post->post_raw,
+        url => $post_url,
+      },
+    };
+  }
+  else {
+    redirect '/';
+    return '';
+  }
+}
+
+post '/?' => sub {
+  return api_post;
+};
+
+# Twitter-compatible api post route
+post '/statuses/update.:format' => sub {
+  return api_post;
+};
+
+# -------------------------------------------------------------------------
+# Individual post routes
+#
+# GET    /post/<id> - display
+# DELETE /post/<id> - delete
+# POST   /post/<id> - partial updates (yes I know, not entirely restful ...)
+#          post  => 'updated post'
+#          pause => 0/1
+#          delete => 0
+# 
+
+# Display individual posts
+sub display {
+  my ($id, $format) = @_;
+
+  my $rs = $schema->resultset('Post');
+  $rs->result_class('DBIx::Class::ResultClass::HashRefInflator')
+    if $format ne 'html';
+  my $post = $rs->find($id)
+    or return bad_request({ error => "Invalid post '$id'" });
+
+  status 200;
+  if ($format ne 'html') {
+    delete $post->{post_processed};
+    $post->{post} = delete $post->{post_raw};
+    return $post;
+  }
+  else {
+    template "display_$format" => { post => $post };
+  }
+}
+
+get '/post/:id' => sub {
+  my $id = params->{id};
+  display($id, 'html');
+};
+
+get '/post/:id/:format' => sub {
+  my $id = params->{id};
+  my $format = params->{format} || 'html';
+  unless ($format{$format}) {
+    status 403;
+    return template "error" => { error => "Invalid format '$format'" };
+  }
+
+  display($id, $format);
+};
+
+# Delete post
+del '/post/:id' => sub {
+  my $id = params->{id};
+  my $post = $schema->resultset('Post')->find($id)
+    or return bad_request({ error => "Invalid post '$id'" });
+
+  $post->update({ delete_b => 1 });
+
+  content_type 'application/json';
+  status 204;
+  return '';
+};
+
+# Update post (partial, not full PUT)
+post '/post/:id' => sub {
+  my $id = params->{id};
+
+  my $post = $schema->resultset('Post')->find($id)
+    or return bad_request({ error => "Invalid post '$id'" });
+
+  my %param_map = (
+    post    => 'post_raw',
+    pause   => 'pause_b',
+    delete  => 'delete_b',
+  );
+  my %update;
+  for my $p (keys %param_map) {
+    $update{ $param_map{$p} } = Encode::decode_utf8(params->{$p}) 
+      if exists params->{$p};
+  }
+  if (keys %update) {
+    $post->update( \%update )
+      or return system_error({ error => "Update failed: $!" });
+
+    return display($id, 'serialise');
+  }
+
+  else {
+    content_type 'application/json';
+    return bad_request({ error => "No valid parameters found [post|pause|delete]" });
+  }
+};
+
+# -------------------------------------------------------------------------
+# Main
+
+Dancer->dance;
+

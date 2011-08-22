@@ -1,0 +1,34 @@
+#!/usr/bin/perl
+#
+# Post via Net::Twitter
+#
+
+use strict;
+use File::Basename;
+use Getopt::Long qw(:config no_ignore_case bundling);
+use Net::Twitter;
+use YAML;
+
+sub usage { die "usage: " . basename($0) . " <post_text>\n" }
+
+my ($help, $verbose);
+usage
+unless GetOptions(
+  'help|h|?'    => \$help,
+  'verbose|v+'  => \$verbose,
+);
+usage if $help;
+
+my $post = join(' ', @ARGV);
+usage if $post !~ /\S/;
+
+my $nt = Net::Twitter->new(
+  traits   => [qw/API::REST/],
+  username => 'foo',
+  password => 'bar',
+  apiurl   => 'http://localhost:3001',
+);
+
+my $result = $nt->update($post);
+print Dump $result;
+

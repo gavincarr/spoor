@@ -1,0 +1,32 @@
+#!/usr/bin/perl
+
+use strict;
+use File::Basename;
+use Getopt::Long qw(:config no_ignore_case bundling);
+use LWP::UserAgent;
+use JSON::Any;
+
+sub usage { die "usage: " . basename($0) . " <post_text>\n" }
+
+my ($help, $verbose);
+usage
+unless GetOptions(
+  'help|h|?'    => \$help,
+  'verbose|v+'  => \$verbose,
+);
+usage if $help;
+
+my $post = join(' ', @ARGV);
+usage if $post !~ /\S/;
+
+my $url = 'http://localhost:3000/';
+my $j = JSON::Any->new;
+my $ua = LWP::UserAgent->new;
+
+my $resp = $ua->post($url,
+  Content_Type => 'application/json',
+  Content => $j->encode({ post => $post }),
+);
+printf "Status: %s\n", $resp->code;
+print $resp->content;
+
