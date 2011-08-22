@@ -2,11 +2,15 @@ package Spoor::Config;
 
 use strict;
 use Config::Tiny;
+use File::Basename;
+
+# Set $SPOOR_HOME to our grandparent directory
+my $SPOOR_HOME = dirname dirname dirname $INC{"Spoor/Config.pm"};
 
 sub _init {
   my $self = shift;
 
-  my $config = $self->{config} = Config::Tiny->read( $ENV{SPOOR_HOME} . "/spoor.conf" );
+  my $config = $self->{config} = Config::Tiny->read( "$SPOOR_HOME/conf/spoor.conf" );
   $self->{tag} = {};
   $self->{default_tags} = [];
 

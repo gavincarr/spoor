@@ -5,9 +5,10 @@
 
 use strict;
 use Time::Piece;
+
 use FindBin qw($Bin);
 use lib "$Bin/../../lib";
-use Microbe::Util qw(get_schema ts2iso8601);
+use Spoor::Util qw(get_schema ts2iso8601);
 
 my $schema = get_schema;
 

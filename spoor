@@ -1,0 +1,52 @@
+#!/usr/bin/perl
+#
+# Spoor web service
+#
+# - accept posts via an api (json messages via HTTP POSTs)
+# - simple interfaces for post listing and display (html and atom)
+#
+
+use strict;
+use Mojolicious::Lite;
+
+use FindBin qw($Bin);
+use lib "$Bin/lib";
+use Spoor::Config;
+use Spoor::Util qw(get_schema ts2iso8601_offset);
+
+# -------------------------------------------------------------------------
+# Config stuff
+#
+
+app->secret('d1f78fc8-d6df-44f0-835a-23ad39cda20f');
+
+my $config = Spoor::Config->new;
+my $spoor_url = $config->get('url')
+  or die "Missing 'url' setting in spoor.conf\n";
+my $schema = get_schema($config->{environment});
+
+# -------------------------------------------------------------------------
+# Top-level GET routes
+#
+# GET /
+
+get '/' => sub {
+  my $self = shift;
+
+  my @rs = $schema->resultset('Post')->search({
+    delete_b    => 0,
+  }, { 
+    order_by    => 'timestamp desc',
+    rows        => $config->get('display_limit') || 100,
+  })->all;
+  return '' unless @rs;
+
+  my $publish_delay = ($config->get('publish_delay') || 180) + 30;
+  $self->stash(rs => \@rs);
+  $self->stash(js_list => [ qw(post.js) ]);
+  $self->stash(publish_delay => $publish_delay);
+  $self->stash(ts_cutoff_epoch => time - $publish_delay);
+} => 'index';
+
+app->start;
+

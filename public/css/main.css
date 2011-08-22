@@ -1,0 +1,86 @@
+body {
+  color: #333;
+  font-family: 'Lucida Sans Unicode', 'Lucida Grande',sans-serif;
+  font-size: 0.8em;
+  background-color: rgb(200, 225, 250);
+}
+
+h1 {
+  margin: 10px auto;
+  font-size: 1.8em;
+}
+
+img {
+  border: none;
+}
+img.icon {
+  padding: 2px;
+}
+
+#content {
+  width: 750px;
+  padding: 10px 30px;
+  margin: 20px auto;
+  background-color: #fff;
+  -moz-border-radius: 6px;
+}
+a {
+  color: #47c;
+  text-decoration: none;
+}
+/* 
+a:visited {
+  color: #93c;
+}
+*/
+a:hover {
+  text-decoration: underline;
+}
+
+div.post {
+  padding: 10px 1px;
+  border-top: 1px dotted #ccc;
+}
+div.paused {
+  background-color: #ffd;
+}
+div.post:hover {
+  background-color: rgb(210, 230, 250);
+  background-color: rgba(210, 230, 250, 0.4);
+}
+div.paused:hover {
+  background-color: #ffc;
+}
+
+#post_form {
+  margin-bottom: 10px;
+}
+#post_submit, .post_save {
+  position: relative;
+  top: -5px;
+}
+.post_text {
+  margin: 0px;
+  padding-bottom: 4px;
+}
+.post_meta {
+  margin: 3px 0px 0px 0px;
+  color: #aaa;
+  font-size: 0.8em;
+}
+.post_controls {
+  margin: 0;
+  float: right;
+}
+.post_chars {
+  color: #ccc;
+  font-size: 16px;
+  font-weight: bold;
+  position: relative;
+  top: -45px;
+  left: -128px;
+}
+#post_chars {
+  left: -55px;
+  display: none;
+}
