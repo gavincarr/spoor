@@ -85,7 +85,7 @@ __PACKAGE__->belongs_to("type", "Spoor::Schema::Result::TagType", { id => "type"
 
 Type: many_to_many
 
-Related object: L<Microbe::Schema::Result::Post>
+Related object: L<Spoor::Schema::Result::Post>
 
 =cut
 

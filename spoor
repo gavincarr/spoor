@@ -8,6 +8,7 @@
 
 use strict;
 use Mojolicious::Lite;
+use Encode;
 
 use FindBin qw($Bin);
 use lib "$Bin/lib";
@@ -31,17 +32,21 @@ my $schema = get_schema($config->{environment});
 
 sub bad_request {
   my ($self, $data) = @_;
-  $self->res->code(403);
-  $self->render_json($data);
+  $self->render(status => 403, json => $data);
+}
+
+sub system_error {
+  my ($self, $data) = @_;
+  $self->render(status => 500, json => $data);
 }
 
 # -------------------------------------------------------------------------
-# Top-level GET routes
+# Collective GET routes
 #
 # GET /
 
 sub render_html {
-  my ($self, $rs) = @_;
+  my ($self) = @_;
 
   my $publish_delay = ($config->get('publish_delay') || 180) + 30;
   $self->stash(js_list => [ qw(post.js) ]);
@@ -86,14 +91,10 @@ get '/tag/:tag' => sub {
 };
 
 # -------------------------------------------------------------------------
-# Individual post routes
+# Individual post GET routes
 #
-# GET    /post/<id> - display
-# DELETE /post/<id> - delete
-# POST   /post/<id> - partial updates (yes I know, not entirely restful ...)
-#          post  => 'updated post'
-#          pause => 0/1
-#          delete => 0
+# GET    /post/<id>
+# GET    /post/<id>.json
 #
 
 get '/post/:id' => [format => [ 'json' ]] => sub {
@@ -122,6 +123,65 @@ get '/post/:id' => sub {
   $self->stash(post => $post);
   $self->stash(js_list => undef);
   $self->render('display');
+};
+
+# -------------------------------------------------------------------------
+# POST and DELETE routes
+#
+# POST   / - post message
+# DELETE /post/<id> - delete
+# POST   /post/<id> - partial updates (yes I know, not entirely restful ...)
+#          post  => 'updated post'
+#          pause => 0/1
+#          delete => 0
+#
+
+# Top-level api route, processing json POST posts
+sub api_post {
+  my $self = shift;
+
+  # TODO: why aren't json bodies aren't automatically deserialised into params?
+  my $params = $self->req->json
+    or return bad_request({ error => "Not a json request?" });
+  my $text = $params->{post} || $params->{status}
+    or return bad_request({ error => "Missing 'post' or 'status' parameter" });
+
+  my $post_content = Encode::decode_utf8($text);
+  my $post = $schema->resultset('Post')->create({
+    post_raw => $post_content,
+  }) or return system_error({ error => "Creating post failed" });
+
+  my $post_url = "${spoor_url}/post/" . $post->id;
+  $self->render_json({ status => {
+    id      => $post->id,
+    text    => $post->post_raw, 
+    url     => $post_url,
+  }});
+}
+
+# Top-level post
+#post '/index.json' => sub {
+post '/' => sub {
+  my $self = shift;
+  return api_post($self);
+};
+
+# Twitter-compatible api post route
+post '/statuses/update' => sub {
+  my $self = shift;
+  return api_post($self);
+};
+
+del '/post:id' => sub {
+  my $self = shift;
+  my $id = $self->param('id');
+
+  my $post = $schema->resultset('Post')->find($id)
+    or $self->render('notfound');
+
+  $post->update({ delete_b => 1 });
+
+  $self->render(status => 204, json => { msg => 'Deleted' });
 };
 
 # -------------------------------------------------------------------------

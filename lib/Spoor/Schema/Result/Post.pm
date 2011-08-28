@@ -111,7 +111,7 @@ use Spoor::Config;
 
 Type: many_to_many
 
-Related object: L<Microbe::Schema::Result::Tag>
+Related object: L<Spoor::Schema::Result::Tag>
 
 =cut
 
@@ -151,7 +151,7 @@ sub add_default_hashtags {
 # Extract hashtags from post_raw, and find_or_create tags and post_tags
 sub extract_and_create_hashtags {
   my ($self, $config) = @_;
-  $config ||= Microbe::Config->new;
+  $config ||= Spoor::Config->new;
   my $schema = $self->result_source->schema;
 
   my $post_processed = $self->post_raw;
@@ -183,8 +183,8 @@ sub extract_and_create_hashtags {
 
   my $post_html = $self->post_raw;
   $post_html =~ s!$RE{URI}{HTTP}{-keep}{-scheme => qr/https?/}!<a href="$1">$1</a>!g;
-  $post_html =~ s!$RE{microsyntax}{hashtag}!<a href="/tag/$3">$1</a>!og;
-  $post_html =~ s!$RE{microsyntax}{grouptag}!<a href="/tag/$3">$1</a>!og;
+  $post_html =~ s!$RE{microsyntax}{hashtag}{-keep}!<a href="/tag/$3">$1</a>!og;
+  $post_html =~ s!$RE{microsyntax}{grouptag}{-keep}!<a href="/tag/$3">$1</a>!og;
 
   # Set post_processed/post_html
   $self->update({ post_processed => $post_processed, post_html => $post_html });
@@ -206,15 +206,19 @@ sub insert {
 # Override update to auto-create tags and post_tags when post_raw is updated
 sub update {
   my $self = shift;
+
   my %dirty = $self->get_dirty_columns;
   my %extra = $_[0] && ref $_[0] eq 'HASH' ? %{$_[0]} : ();
+
   $self->next::method(@_);
+
   if (exists $dirty{post_raw} || exists $extra{post_raw}) {
     # Remove all existing post_tag records in case some have been removed
     $_->delete foreach $self->post_tags;
     # Extract and create new tags and post_tags
     $self->extract_and_create_hashtags;
   }
+
   return $self;
 }
 
