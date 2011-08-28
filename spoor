@@ -28,19 +28,6 @@ my $spoor_url = $config->get('url')
 my $schema = get_schema($config->{environment});
 
 # -------------------------------------------------------------------------
-# JSON utility routines
-
-sub bad_request {
-  my ($self, $data) = @_;
-  $self->render(status => 403, json => $data);
-}
-
-sub system_error {
-  my ($self, $data) = @_;
-  $self->render(status => 500, json => $data);
-}
-
-# -------------------------------------------------------------------------
 # Collective GET routes
 #
 # GET /
@@ -69,7 +56,7 @@ get '/' => sub {
   $self->stash(rs => \@rs);
 
   render_html($self);
-};
+} => 'index';
 
 get '/tag/:tag' => sub {
   my $self = shift;
@@ -104,7 +91,8 @@ get '/post/:id' => [format => [ 'json' ]] => sub {
   my $rs = $schema->resultset('Post');
   $rs->result_class('DBIx::Class::ResultClass::HashRefInflator');
   my $post = $rs->find($id)
-    or return bad_request({ error => "Invalid post '$id'" });
+    or return $self->render(status => 403,
+      json => { error => "Invalid post '$id'" });
 
   delete $post->{post_processed};
   delete $post->{post_html};
@@ -139,24 +127,42 @@ get '/post/:id' => sub {
 # Top-level api route, processing json POST posts
 sub api_post {
   my $self = shift;
+  my $content_type = $self->req->headers->content_type;
 
   # TODO: why aren't json bodies aren't automatically deserialised into params?
-  my $params = $self->req->json
-    or return bad_request({ error => "Not a json request?" });
-  my $text = $params->{post} || $params->{status}
-    or return bad_request({ error => "Missing 'post' or 'status' parameter" });
+  my $text;
+  if ($content_type =~ /\bjson$/) {
+    my $params = $self->req->json
+      or return $self->render(status => 403,
+        json => { error => "Not a json request?" });
+    $text = $params->{post} || $params->{status}
+      or return $self->render(status => 403,
+        json => { error => "Missing 'post' or 'status' parameter?" });
+  }
+  else {
+    $text = $self->param('post') || $self->param('status')
+      or return $self->render(status => 403,
+        text => "Missing 'post' or 'status parameter?");
+  }
 
   my $post_content = Encode::decode_utf8($text);
   my $post = $schema->resultset('Post')->create({
     post_raw => $post_content,
-  }) or return system_error({ error => "Creating post failed" });
+  }) or return $self->render(status => 500,
+    json => { error => "Creating post failed" });
 
   my $post_url = "${spoor_url}/post/" . $post->id;
-  $self->render_json({ status => {
-    id      => $post->id,
-    text    => $post->post_raw, 
-    url     => $post_url,
-  }});
+
+  if ($content_type =~ /\bjson$/) {
+    $self->render_json({ status => {
+      id      => $post->id,
+      text    => $post->post_raw,
+      url     => $post_url,
+    }});
+  }
+  else {
+    $self->redirect_to('index');
+  }
 }
 
 # Top-level post
