@@ -5,7 +5,7 @@
 
 use strict;
 use lib "$ENV{MICROBE_HOME}/lib";
-use Microbe::Util qw(get_schema);
+use Spoor::Util qw(get_schema);
 use Time::Piece;
 
 my $schema = get_schema;

@@ -1,6 +1,7 @@
 $(function() {
   // Convert post to textarea for edit
   $('div#content').delegate('.post_edit', 'click', function() {
+    alert('post_edit');
     var div = $(this).parents('div:first');
     var text_elt = $('.post_text', div);
     var id = div.attr('id').replace(/^post/,'');

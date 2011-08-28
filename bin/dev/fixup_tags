@@ -6,9 +6,8 @@
 
 use strict;
 use lib "$ENV{MICROBE_HOME}/lib";
-use Microbe::Config;
-use Microbe::Util qw(get_schema extract_target_hashtags);
-use Text::Microblog qw(extract_hashtags);
+use Spoor::Config;
+use Spoor::Util qw(get_schema extract_target_hashtags);
 
 my $schema = get_schema;
 
