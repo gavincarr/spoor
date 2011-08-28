@@ -1,0 +1,7 @@
+% layout 'default';
+<h1>Spoor</h1>
+<div id="post<%= $post->id %>" class="post">
+<a id="<%= $post->id %>"></a>
+<p class="post_text"><%== $post->post_html %></p>
+<p class="post_meta">Posted <span class="post_ts"><%= $post->timestamp %></span>.</p>
+</div>

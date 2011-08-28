@@ -6,7 +6,7 @@
 <title>Spoor - personal microblogging</title>
 <link rel="stylesheet" type="text/css" media="all" href="/css/main.css">
 <link rel="alternate" type="application/atom+xml" title="Post feed (atom)" href="/microbe/atom">
-% if ($js_list ) {
+% if ($js_list) {
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 %   for my $js (@$js_list) {
 <script type="text/javascript" src="/js/<%= $js %>"></script>

@@ -11,6 +11,7 @@ use Mojolicious::Lite;
 
 use FindBin qw($Bin);
 use lib "$Bin/lib";
+use lib 'lib';
 use Spoor::Config;
 use Spoor::Util qw(get_schema ts2iso8601_offset);
 
@@ -26,27 +27,104 @@ my $spoor_url = $config->get('url')
 my $schema = get_schema($config->{environment});
 
 # -------------------------------------------------------------------------
+# JSON utility routines
+
+sub bad_request {
+  my ($self, $data) = @_;
+  $self->res->code(403);
+  $self->render_json($data);
+}
+
+# -------------------------------------------------------------------------
 # Top-level GET routes
 #
 # GET /
+
+sub render_html {
+  my ($self, $rs) = @_;
+
+  my $publish_delay = ($config->get('publish_delay') || 180) + 30;
+  $self->stash(js_list => [ qw(post.js) ]);
+  $self->stash(publish_delay => $publish_delay);
+  $self->stash(ts_cutoff_epoch => time - $publish_delay);
+
+  $self->render('index');
+}
 
 get '/' => sub {
   my $self = shift;
 
   my @rs = $schema->resultset('Post')->search({
     delete_b    => 0,
-  }, { 
+  }, {
     order_by    => 'timestamp desc',
     rows        => $config->get('display_limit') || 100,
   })->all;
   return '' unless @rs;
-
-  my $publish_delay = ($config->get('publish_delay') || 180) + 30;
   $self->stash(rs => \@rs);
-  $self->stash(js_list => [ qw(post.js) ]);
-  $self->stash(publish_delay => $publish_delay);
-  $self->stash(ts_cutoff_epoch => time - $publish_delay);
-} => 'index';
+
+  render_html($self);
+};
+
+get '/tag/:tag' => sub {
+  my $self = shift;
+  my $tag = $self->param('tag');
+
+  my @rs = $schema->resultset('Post')->search({
+    'tag.type'  => '#',
+    'tag.tag'   => $tag,
+    delete_b    => 0,
+  }, {
+    order_by    => 'timestamp desc',
+    join        => { post_tags => 'tag' },
+    rows        => $config->get('display_limit') || 100,
+  })->all;
+  return '' unless @rs;
+  $self->stash(rs => \@rs);
+
+  render_html($self);
+};
+
+# -------------------------------------------------------------------------
+# Individual post routes
+#
+# GET    /post/<id> - display
+# DELETE /post/<id> - delete
+# POST   /post/<id> - partial updates (yes I know, not entirely restful ...)
+#          post  => 'updated post'
+#          pause => 0/1
+#          delete => 0
+#
+
+get '/post/:id' => [format => [ 'json' ]] => sub {
+  my $self = shift;
+  my $id = $self->param('id');
+
+  my $rs = $schema->resultset('Post');
+  $rs->result_class('DBIx::Class::ResultClass::HashRefInflator');
+  my $post = $rs->find($id)
+    or return bad_request({ error => "Invalid post '$id'" });
+
+  delete $post->{post_processed};
+  delete $post->{post_html};
+  $post->{post} = delete $post->{post_raw};
+
+  $self->render(json => $post);
+};
+
+get '/post/:id' => sub {
+  my $self = shift;
+  my $id = $self->param('id');
+
+  my $post = $schema->resultset('Post')->find($id)
+    or $self->render('notfound');
+
+  $self->stash(post => $post);
+  $self->stash(js_list => undef);
+  $self->render('display');
+};
+
+# -------------------------------------------------------------------------
 
 app->start;
 
