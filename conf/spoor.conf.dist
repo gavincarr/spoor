@@ -6,6 +6,10 @@
 # URL for this spoor instance
 url = http://nox:3001
 
+# Authentication settings
+#username = 'gavin'
+#password = 'sekrit'
+
 # Delay in seconds before new posts begin to be forwarded on (for review/correction etc.)
 publish_delay = 120
 

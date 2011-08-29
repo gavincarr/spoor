@@ -37,7 +37,7 @@ under sub {
   my $self = shift;
 
   return 1 if $self->basic_auth(
-    realm => sub {
+    Spoor => sub {
       my ($user, $pass) = @_;
       return 0 unless $config->{username} && $config->{password};
       return 1 if $user eq $config->{username} && $pass eq $config->{password};
