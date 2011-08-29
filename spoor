@@ -10,6 +10,8 @@ use strict;
 use Mojolicious::Lite;
 use Encode;
 
+plugin 'basic_auth';
+
 use FindBin qw($Bin);
 use lib "$Bin/lib";
 use lib 'lib';
@@ -26,6 +28,24 @@ my $config = Spoor::Config->new;
 my $spoor_url = $config->get('url')
   or die "Missing 'url' setting in spoor.conf\n";
 my $schema = get_schema($config->{environment});
+
+# -------------------------------------------------------------------------
+# Authentication
+
+# Everything below here requires authentication
+under sub {
+  my $self = shift;
+
+  return 1 if $self->basic_auth(
+    realm => sub {
+      my ($user, $pass) = @_;
+      return 0 unless $config->{username} && $config->{password};
+      return 1 if $user eq $config->{username} && $pass eq $config->{password};
+    },
+  );
+
+  return 0;
+};
 
 # -------------------------------------------------------------------------
 # Collective GET routes
@@ -129,7 +149,7 @@ sub api_post {
   my $self = shift;
   my $content_type = $self->req->headers->content_type;
 
-  # TODO: why aren't json bodies aren't automatically deserialised into params?
+  # TODO: why aren't json bodies automatically deserialised into params?
   my $text;
   if ($content_type =~ /\bjson$/) {
     my $params = $self->req->json
