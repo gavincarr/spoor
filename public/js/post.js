@@ -1,14 +1,13 @@
 $(function() {
   // Convert post to textarea for edit
   $('div#content').delegate('.post_edit', 'click', function() {
-    alert('post_edit');
     var div = $(this).parents('div:first');
     var text_elt = $('.post_text', div);
     var id = div.attr('id').replace(/^post/,'');
     // Pause posts while editing
     $.post('/post/' + id, { pause: 1 });
     // Fetch the raw post to display for editing
-    $.getJSON('/post/' + id + '/json', function(data) {
+    $.getJSON('/post/' + id + '.json', function(data) {
       $('.post_controls', div).hide();
       text_elt.data('html', text_elt.html());
       text_elt.data('text', data.post);

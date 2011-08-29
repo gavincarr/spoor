@@ -6,7 +6,7 @@
 <input id="post_submit" name="submit" type="submit" value="Post"></input>
 <span id="post_chars" class="post_chars">0</span>
 </form>
-% for my $post (@$rs) {
+% while (my $post = $rs->next) {
 <div id="post<%= $post->id %>" class="post<%= $post->pause_b ? ' paused' : '' %>">
 <a id="<%= $post->id %>"></a>
 <p class="post_text"><%== $post->post_html %></p>

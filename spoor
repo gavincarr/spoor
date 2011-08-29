@@ -9,6 +9,8 @@
 use strict;
 use Mojolicious::Lite;
 use Encode;
+use XML::Atom;
+use XML::Atom::Feed;
 
 plugin 'basic_auth';
 
@@ -56,7 +58,7 @@ under sub {
 #
 # GET /
 
-sub render_html {
+helper render_html => sub {
   my ($self) = @_;
 
   my $publish_delay = ($config->get('publish_delay') || 180) + 30;
@@ -65,28 +67,76 @@ sub render_html {
   $self->stash(ts_cutoff_epoch => time - $publish_delay);
 
   $self->render('index');
-}
+};
 
-get '/' => sub {
-  my $self = shift;
+helper render_atom => sub {
+  my ($self, $rs, $path) = @_;
 
-  my @rs = $schema->resultset('Post')->search({
+  $XML::Atom::DefaultVersion = "1.0";
+
+  my $new_feed = sub {
+    my $feed = XML::Atom::Feed->new;
+    $feed->title($config->get('title') || "Spoor Posts");
+    $feed->id($spoor_url . $path);
+    return $feed;
+  };
+  my $feed = $new_feed->();
+
+  while (my $post = $rs->next) {
+    # If we find a post that is paused, reset the feed and start again with next
+    if ($post->pause_b) {
+      $feed = $new_feed->();
+      next;
+    }
+
+    my $id = $post->id;
+    my $entry = XML::Atom::Entry->new;
+    $entry->id("$spoor_url/post/$id");
+    $entry->title($post->post_processed);
+    $entry->content($post->post_processed);
+    $entry->published(ts2iso8601_offset($post->timestamp, $config->get('publish_delay') || 180));
+    $feed->add_entry($entry);
+  }
+
+  $self->render(format => 'xml', text => $feed->as_xml);
+};
+
+helper render_rs => sub {
+  my ($self, $path, $rs) = @_;
+
+  $rs ||= $schema->resultset('Post')->search({
     delete_b    => 0,
   }, {
     order_by    => 'timestamp desc',
     rows        => $config->get('display_limit') || 100,
-  })->all;
-  return '' unless @rs;
-  $self->stash(rs => \@rs);
+  });
+  return '' unless $rs;
 
-  render_html($self);
+  if ($self->stash('format') eq 'atom') {
+    $self->render_atom($rs, "$path.atom");
+  }
+
+  else {
+    $self->stash(rs => $rs);
+    $self->render_html;
+  }
 } => 'index';
+
+get '/' => sub {
+  my $self = shift;
+  $self->render_rs('/index');
+};
+
+get '/index' => sub {
+  my $self = shift;
+  $self->render_rs('/index');
+};
 
 get '/tag/:tag' => sub {
   my $self = shift;
   my $tag = $self->param('tag');
 
-  my @rs = $schema->resultset('Post')->search({
+  my $rs = $schema->resultset('Post')->search({
     'tag.type'  => '#',
     'tag.tag'   => $tag,
     delete_b    => 0,
@@ -94,11 +144,10 @@ get '/tag/:tag' => sub {
     order_by    => 'timestamp desc',
     join        => { post_tags => 'tag' },
     rows        => $config->get('display_limit') || 100,
-  })->all;
-  return '' unless @rs;
-  $self->stash(rs => \@rs);
+  });
+  return '' unless $rs;
 
-  render_html($self);
+  $self->render_rs("/tag/$tag", $rs);
 };
 
 # -------------------------------------------------------------------------

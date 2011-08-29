@@ -6,5 +6,6 @@ Makefile.old
 Build
 Build.bat
 MANIFEST.bak
+TODO
 conf/*.conf
 var/*
