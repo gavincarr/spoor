@@ -36,11 +36,15 @@ my $schema = get_schema($config->{environment});
 under sub {
   my $self = shift;
 
+  my $conf_username = $config->get('username');
+  my $conf_password = $config->get('password');
+
   return 1 if $self->basic_auth(
     Spoor => sub {
       my ($user, $pass) = @_;
-      return 0 unless $config->{username} && $config->{password};
-      return 1 if $user eq $config->{username} && $pass eq $config->{password};
+      return 0 unless defined $user && defined $pass;
+      return 0 unless defined $conf_username && defined $conf_password;
+      return 1 if $user eq $conf_username && $pass eq $conf_password;
     },
   );
 
