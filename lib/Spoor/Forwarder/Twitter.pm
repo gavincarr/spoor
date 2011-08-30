@@ -1,8 +1,8 @@
 package Spoor::Forwarder::Twitter;
 
 use strict;
-use base 'Spoor::Forwarder::Identica';
-use Text::Microblog qw(replace_groups);
+use parent 'Spoor::Forwarder::Identica';
+use Regexp::Common qw(microsyntax);
 
 sub connect {
   my $self = shift;
@@ -14,10 +14,10 @@ sub process_post {
   my ($self, $title, $content) = @_;
   $title = $self->SUPER::process_post($title, $content);
 
-  return replace_groups($title, sub {
-    my $group = shift;
-    return '#' . substr($group, 1);
-  });
+  # Convert identica groups to normal hashtags for twitter
+  $title =~ s|$RE{microsyntax}{grouptag}{-keep}|#$3|g;
+
+  return $title;
 }
 
 1;

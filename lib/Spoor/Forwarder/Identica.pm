@@ -16,9 +16,9 @@ sub connect {
 
   # If user and pass are set use Basic Auth, else OAuth
   my $oauth = 0;
-  if ($self->{config}->{user} && $self->{config}->{pass}) {
-    $nt_config{username} = $self->{config}->{user};
-    $nt_config{password} = $self->{config}->{pass};
+  if ($self->{config}->{username} && $self->{config}->{password}) {
+    $nt_config{username} = $self->{config}->{username};
+    $nt_config{password} = $self->{config}->{password};
   }
   elsif ($self->{config}->{spoor_oauth_key} &&
          $self->{config}->{spoor_oauth_secret}) {

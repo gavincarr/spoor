@@ -29,8 +29,8 @@ sub process_entry {
 
   unless ($self->{noop}) {
     $self->{delicious} ||= Net::Delicious->new({
-      user => $self->{config}->{user},
-      pswd => $self->{config}->{pass},
+      user => $self->{config}->{username},
+      pswd => $self->{config}->{password},
     }) or die "Connect to delicious failed\n";
     
     $self->{delicious}->add_post({

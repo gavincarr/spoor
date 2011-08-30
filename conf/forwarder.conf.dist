@@ -1,17 +1,25 @@
+# Spoor settings (cf. spoor.conf)
+url = https://spoor.example.com
+username = gavin
+password = sekrit
+
+# Target settings
 [ delicious ]
-feed = http://nox:3000/tag/bm/atom
-user = gavincarr
-pass = sekret1
+tag = bm
+username = gavincarr
+password = sekret1
 
 [ identica ]
-feed = http://nox:3000/tag/i/atom
-user = gavincarr
-pass = sekret2
+tag = i
 process_post = s/ #bm\b.*$//
+username = gavincarr
+password = sekret2
 
 [ twitter ]
-feed = http://nox:3000/tag/t/atom
+tag = t
+process_post = s/ #bm\b.*$//
 spoor_oauth_key = OSgoKkXmTG14NN0gPvDQg
 spoor_oauth_secret = fYfSmeFyJtRr6YAvGyB5bMdU0WEcACH8Zzds1XQX8
-process_post = s/ #bm\b.*$//
+access_token = blahblahblah
+access_token_secret = foobarfoobar
 

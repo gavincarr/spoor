@@ -63,6 +63,7 @@ sub _load_config {
   exists $config->{$self->{short}}
     or die "Cannot find '$self->{short}' section in forwarder config file\n";
   $self->{config_obj} = $config;
+  $self->{config_global} = $config->{_};
   $self->{config} = $config->{$self->{short}};
 }
 
@@ -89,8 +90,12 @@ sub _load_state {
 sub _load_feed {
   my $self = shift;
 
-  $self->{feed} = XML::Atom::Feed->new( URI->new($self->{config}->{feed}) )
-    or die "Loading feed '$self->{config}->{feed}' failed: $!\n";
+  my $cg = $self->{config_global};
+  my $feed_uri = URI->new("$cg->{url}/tag/$self->{config}->{tag}.atom");
+  $feed_uri->userinfo("$cg->{username}:$cg->{password}");
+
+  $self->{feed} = XML::Atom::Feed->new( $feed_uri )
+    or die "Loading feed '$feed_uri' failed.\n";
 }
 
 # Process all entries in feed
@@ -113,7 +118,7 @@ sub _process_feed {
     last if $entry->published gt gmtime->strftime('%Y-%m-%dT%TZ');
 
     # New entry - process
-    printf "+ processing new item: [%s] %s\n", $st->{id}, $st->{title} || ''
+    printf "+ processing new item: [%s] %s\n", $id, $entry->title || ''
       if $self->{verbose};
     if ($self->process_entry( $entry )) {
       # Update state
