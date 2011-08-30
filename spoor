@@ -29,7 +29,7 @@ app->secret('d1f78fc8-d6df-44f0-835a-23ad39cda20f');
 my $config = Spoor::Config->new;
 my $spoor_url = $config->get('url')
   or die "Missing 'url' setting in spoor.conf\n";
-my $schema = get_schema($config->{environment});
+my $schema = get_schema($config->get('environment'));
 
 # -------------------------------------------------------------------------
 # Authentication
@@ -234,7 +234,7 @@ sub api_post {
     }});
   }
   else {
-    $self->redirect_to('index');
+    $self->redirect_to($config->get('url'));
   }
 }
 
