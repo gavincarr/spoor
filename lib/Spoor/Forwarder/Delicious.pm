@@ -6,8 +6,7 @@ use base 'Spoor::Forwarder';
 use Net::Delicious;
 use LWP::UserAgent;
 use HTML::TreeBuilder;
-use Text::Microblog qw(extract_hashtags extract_groups);
-use Regexp::Common;
+use Regexp::Common qw(microsyntax);
 use YAML;
 
 use Spoor::Config;
@@ -29,8 +28,9 @@ sub process_entry {
 
   unless ($self->{noop}) {
     $self->{delicious} ||= Net::Delicious->new({
-      user => $self->{config}->{username},
-      pswd => $self->{config}->{password},
+      user      => $self->{config}->{username},
+      pswd      => $self->{config}->{password},
+      endpoint  => $self->{config}->{endpoint},
     }) or die "Connect to delicious failed\n";
     
     $self->{delicious}->add_post({
@@ -72,11 +72,12 @@ sub process_post {
   # Collate hashtags and groups, ignoring any that are target tags
   my $config = Spoor::Config->new;
   my %target_tag = map { $_ => 1 } $config->tags;
+  my @hashtags  = $post =~ m/$RE{microsyntax}{hashtag}/og;
+  my @grouptags = $post =~ m/$RE{microsyntax}{grouptag}/og;
   my $tags = join ' ',
              grep { ! $target_tag{$_} }
              map { substr($_, 1) }
-             extract_hashtags($post, delete => 1),
-             extract_groups($post, delete => 1);
+             @hashtags, @grouptags;
 
   return {
     url => $url,

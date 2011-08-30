@@ -4,11 +4,6 @@ username = gavin
 password = sekrit
 
 # Target settings
-[ delicious ]
-tag = bm
-username = gavincarr
-password = sekret1
-
 [ identica ]
 tag = i
 process_post = s/ #bm\b.*$//
@@ -22,4 +17,16 @@ spoor_oauth_key = OSgoKkXmTG14NN0gPvDQg
 spoor_oauth_secret = fYfSmeFyJtRr6YAvGyB5bMdU0WEcACH8Zzds1XQX8
 access_token = blahblahblah
 access_token_secret = foobarfoobar
+
+[ delicious ]
+tag = bm
+username = gavincarr
+password = sekrit1
+
+[pinboard]
+tag = bm
+forwarder = Delicious
+endpoint = https://api.pinboard.in/v1/
+username = gavincarr
+password = sekrit3
 
