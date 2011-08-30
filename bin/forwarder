@@ -14,7 +14,7 @@ $target =~ s/^forwarder_?//;
 die "Must call forwarder via a forwarder_<target> symlink\n" unless $target;
 
 my $class = "Spoor::Forwarder::\u$target";
-eval "require $class" or die "Cannot load class '$class'\n";
+eval "require $class" or die "Cannot load class '$class': $@\n";
 
 $class->run;
 
