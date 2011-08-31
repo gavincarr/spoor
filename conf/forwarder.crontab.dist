@@ -4,6 +4,7 @@ SPOOR_HOME=/path/to/spoor
 #* * * * * $SPOOR_HOME/bin/forwarder_identica
 #* * * * * $SPOOR_HOME/bin/forwarder_twitter
 #* * * * * $SPOOR_HOME/bin/forwarder_delicious
+#* * * * * $SPOOR_HOME/bin/forwarder_pinboard
 
 # vim:ft=crontab
 
