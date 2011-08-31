@@ -112,7 +112,8 @@ helper render_rs => sub {
   });
   return '' unless $rs;
 
-  if ($self->stash('format') eq 'atom') {
+  my $format = $self->stash('format') || '';
+  if ($format eq 'atom') {
     $self->render_atom($rs, "$path.atom");
   }
 
@@ -167,10 +168,9 @@ helper render_json_post => sub {
       json => { error => "Invalid post '$id'" });
 
   delete $post->{post_processed};
-  delete $post->{post_html};
   $post->{post} = delete $post->{post_raw};
 
-  $self->render(json => $post);
+  $self->render_json($post);
 };
 
 get '/post/:id' => [format => [ 'json' ]] => sub {
