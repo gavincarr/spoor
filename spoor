@@ -157,9 +157,8 @@ get '/tag/:tag' => sub {
 # GET    /post/<id>.json
 #
 
-get '/post/:id' => [format => [ 'json' ]] => sub {
-  my $self = shift;
-  my $id = $self->param('id');
+helper render_json_post => sub {
+  my ($self, $id) = @_;
 
   my $rs = $schema->resultset('Post');
   $rs->result_class('DBIx::Class::ResultClass::HashRefInflator');
@@ -172,6 +171,11 @@ get '/post/:id' => [format => [ 'json' ]] => sub {
   $post->{post} = delete $post->{post_raw};
 
   $self->render(json => $post);
+};
+
+get '/post/:id' => [format => [ 'json' ]] => sub {
+  my $self = shift;
+  $self->render_json_post($self->param('id'));
 };
 
 get '/post/:id' => sub {
@@ -198,7 +202,7 @@ get '/post/:id' => sub {
 #
 
 # Top-level api route, processing json POST posts
-sub api_post {
+helper api_post => sub {
   my $self = shift;
   my $content_type = $self->req->headers->content_type;
 
@@ -236,22 +240,57 @@ sub api_post {
   else {
     $self->redirect_to($config->get('url'));
   }
-}
+};
 
 # Top-level post
 #post '/index.json' => sub {
 post '/' => sub {
   my $self = shift;
-  return api_post($self);
+  return $self->api_post;
 };
 
 # Twitter-compatible api post route
 post '/statuses/update' => sub {
   my $self = shift;
-  return api_post($self);
+  return $self->api_post;
 };
 
-del '/post:id' => sub {
+# Update post (partial, not pull PUT)
+post '/post/:id' => sub {
+  my $self = shift;
+  my $id = $self->param('id');
+
+  my $post = $schema->resultset('Post')->find($id)
+    or return $self->render(status => 403,
+      json => { error => "Invalid post '$id'" });
+
+  my %param_map = (
+    post    => 'post_raw',
+    pause   => 'pause_b',
+    delete  => 'delete_b',
+  );
+  my %update;
+  for my $p (keys %param_map) {
+    my $val = $self->param($p);
+    if (defined $val && $val ne '') {
+      $update{ $param_map{$p} } = Encode::decode_utf8( $val );
+    }
+  }
+  if (keys %update) {
+    $post->update( \%update )
+      or return $self->render(status => 500,
+        json => { error => "Update failed: $!" });
+
+    $self->render_json_post($post->id);
+  }
+
+  else {
+    return $self->render(status => 403,
+      json => { error => "No valid parameters found [post|pause|delete]" });
+  }
+};
+
+del '/post/:id' => sub {
   my $self = shift;
   my $id = $self->param('id');
 
