@@ -30,7 +30,7 @@ sub process_entry {
     $self->{delicious} ||= Net::Delicious->new({
       user      => $self->{config}->{username},
       pswd      => $self->{config}->{password},
-      endpoint  => $self->{config}->{endpoint},
+      $self->{config}->{endpoint} ? ( endpoint  => $self->{config}->{endpoint} ) : (),
     }) or die "Connect to delicious failed\n";
     
     $self->{delicious}->add_post({
