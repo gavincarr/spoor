@@ -7,16 +7,23 @@ password = sekrit
 [ identica ]
 tag = i
 process_post = s/ #bm\b.*$//
+# Use username/password if using Basic Authentication
 username = gavincarr
 password = sekret2
+# Use the next 4 fields if using OAuth
+#spoor_oauth_key = identica_consumer_key
+#spoor_oauth_secret = identica_consumer_secret
+#access_token = identica_user_access_token
+#access_token_secret = identica_user_access_token_secret
 
 [ twitter ]
 tag = t
 process_post = s/ #bm\b.*$//
-spoor_oauth_key = OSgoKkXmTG14NN0gPvDQg
-spoor_oauth_secret = fYfSmeFyJtRr6YAvGyB5bMdU0WEcACH8Zzds1XQX8
-access_token = blahblahblah
-access_token_secret = foobarfoobar
+# Twitter only supports OAuth now
+spoor_oauth_key = twitter_consumer_key
+spoor_oauth_secret = twitter_consumer_secret
+access_token = twitter_user_access_token
+access_token_secret = twitter_user_access_token_secret
 
 [ delicious ]
 tag = bm
