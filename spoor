@@ -32,28 +32,6 @@ my $spoor_url = $config->get('url')
 my $schema = get_schema($config->get('environment'));
 
 # -------------------------------------------------------------------------
-# Authentication
-
-# Everything below here requires authentication
-under sub {
-  my $self = shift;
-
-  my $conf_username = $config->get('username');
-  my $conf_password = $config->get('password');
-
-  return 1 if $self->basic_auth(
-    Spoor => sub {
-      my ($user, $pass) = @_;
-      return 0 unless defined $user && defined $pass;
-      return 0 unless defined $conf_username && defined $conf_password;
-      return 1 if $user eq $conf_username && $pass eq $conf_password;
-    },
-  );
-
-  return 0;
-};
-
-# -------------------------------------------------------------------------
 # Collective GET routes
 #
 # GET /
@@ -188,6 +166,48 @@ get '/post/:id' => sub {
   $self->stash(post => $post);
   $self->stash(js_list => undef);
   $self->render('display');
+};
+
+# -------------------------------------------------------------------------
+# Authentication
+
+helper 'login' => sub {
+  my $self = shift;
+
+  my $conf_username = $config->get('username');
+  my $conf_password = $config->get('password');
+
+  return 1 if $self->basic_auth(
+    Spoor => sub {
+      my ($user, $pass) = @_;
+      return 0 unless defined $user && defined $pass;
+      return 0 unless defined $conf_username && defined $conf_password;
+      if ($user eq $conf_username && $pass eq $conf_password) {
+        $self->session(user => $user);
+        return 1;
+      }
+    },
+  );
+
+  return 0;
+};
+
+get '/login' => sub {
+  my $self = shift;
+  $self->login;
+  $self->redirect_to('index');
+};
+
+get '/logout' => sub {
+  my $self = shift;
+  $self->session(expires => 1);
+  $self->redirect_to('index');
+};
+
+# Everything below here requires authentication
+under sub {
+  my $self = shift;
+  return $self->login;
 };
 
 # -------------------------------------------------------------------------

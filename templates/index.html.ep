@@ -1,15 +1,19 @@
 % layout 'default';
-<h1>Spoor</h1>
+% my $user = session 'user';
+<h1>Spoor<%= $user ? " - $user" : '' %></h1>
 <div id="publish_delay" style="display:none"><%= $publish_delay %></div>
+% if ($user) {
 <form id="post_form" action="" method="post">
 <textarea id="post_data" name="post" rows="3" cols="70"></textarea>
 <input id="post_submit" name="submit" type="submit" value="Post"></input>
 <span id="post_chars" class="post_chars">0</span>
 </form>
+% }
 % while (my $post = $rs->next) {
 <div id="post<%= $post->id %>" class="post<%= $post->pause_b ? ' paused' : '' %>">
 <a id="<%= $post->id %>"></a>
 <p class="post_text"><%== $post->post_html %></p>
+% if ($user) {
 <p class="post_controls">
 %   if ($post->pause_b) {
 <a class="post_unpause" href=""><img class="icon" src="/images/control_play.png" title="unpause post" alt="unpause post"></a>
@@ -19,6 +23,7 @@
 <a class="post_edit" href=""><img class="icon" src="/images/application_edit.png" title="edit post" alt="edit post"></a>
 <a class="post_delete" href=""><img class="icon" src="/images/cross.png" title="delete post" alt="delete post"></a>
 </p>
+% }
 <p class="post_meta">Posted <span class="post_ts" data-epoch="<%= $post->ts_epoch %>"><%= $post->timestamp %></span>.</p>
 </div>
 % }
