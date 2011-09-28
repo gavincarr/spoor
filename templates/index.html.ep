@@ -1,6 +1,6 @@
 % layout 'default';
 % my $user = session 'user';
-<h1>Spoor<%= $user ? " - $user" : '' %></h1>
+<h1><%= $title %></h1>
 <div id="publish_delay" style="display:none"><%= $publish_delay %></div>
 % if ($user) {
 <form id="post_form" action="" method="post">
@@ -27,3 +27,4 @@
 <p class="post_meta">Posted <span class="post_ts" data-epoch="<%= $post->ts_epoch %>"><%= $post->timestamp %></span>.</p>
 </div>
 % }
+%# vim:ft=mason
