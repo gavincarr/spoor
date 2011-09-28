@@ -9,7 +9,9 @@
 <span id="post_chars" class="post_chars">0</span>
 </form>
 % }
+% my $now = Time::Piece->localtime;
 % while (my $post = $rs->next) {
+%   my $tp = $post->ts2tp;
 <div id="post<%= $post->id %>" class="post<%= $post->pause_b ? ' paused' : '' %>">
 <a id="<%= $post->id %>"></a>
 <p class="post_text"><%== $post->post_html %></p>
@@ -24,7 +26,7 @@
 <a class="post_delete" href=""><img class="icon" src="/images/cross.png" title="delete post" alt="delete post"></a>
 </p>
 % }
-<p class="post_meta">Posted <span class="post_ts" data-epoch="<%= $post->ts_epoch %>"><%= $post->timestamp %></span>.</p>
+<p class="post_meta"><a href="" class="post_ts" data-epoch="<%= $tp->epoch %>" title="<%= $tp->strftime('%d %b %Y, %I:%M %p') %>"><%= Spoor::Util::tp2human_duration($tp, $now) %></a></p>
 </div>
 % }
 %# vim:ft=mason

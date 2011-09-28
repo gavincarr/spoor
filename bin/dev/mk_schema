@@ -1,8 +1,18 @@
-#!/bin/sh
-SPOOR_HOME=/home/gavin/work/spoor
-dbicdump \
-  -o dump_directory=$SPOOR_HOME/lib \
-  -o use_namespaces=1 \
-  -o resultset_namespace=ResultSet \
-  -o overwrite_modifications=1 \
-  Spoor::Schema dbi:SQLite:dbname=$SPOOR_HOME/var/spoor.db 
+#!/usr/bin/perl
+
+use strict;
+use DBIx::Class::Schema::Loader qw(make_schema_at);
+
+use FindBin qw($Bin);
+
+make_schema_at(
+  'Spoor::Schema',
+  {
+    dump_directory          => "$Bin/../../lib",
+    use_namespaces          => 1,
+    resultset_namespace     => 'ResultSet',
+    naming                  => 'current',
+  },
+  [ "dbi:SQLite:dbname=$Bin/../../var/spoor.db" ],
+);
+

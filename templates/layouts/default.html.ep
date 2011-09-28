@@ -13,10 +13,14 @@
 </head>
 <body>
 <div id="content">
-<%= content %></div><!-- content -->
+<%= content %>
 <div id="footer">
-Powered by <a href="http://github.com/gavincarr/spoor/">Spoor</a>.
+<a href="http://github.com/gavincarr/spoor/">Powered by Spoor</a>.
+% if (my $user = session 'user') {
+Authenticated: <%= $user %>.
+% }
 </div><!-- footer -->
+</div><!-- content -->
 %# JavaScript at the bottom for fast page loading
 % if ($js_list) {
 <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->

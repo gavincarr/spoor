@@ -96,16 +96,17 @@ __PACKAGE__->has_many(
   "post_tags",
   "Spoor::Schema::Result::PostTag",
   { "foreign.post_id" => "self.id" },
-  {},
+  { cascade_copy => 0, cascade_delete => 0 },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07010 @ 2011-07-19 07:37:26
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:IGH2SReKpYfdi+/mR0yxFQ
+# Created by DBIx::Class::Schema::Loader v0.07010 @ 2011-09-28 17:52:19
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:NiNxSrfvwAIgihitCSzVSg
 
 use Regexp::Common qw(URI microsyntax);
 use Time::Piece;
 use Lingua::EN::Inflect qw(PL);
+
 use Spoor::Config;
 
 =head2 tags
@@ -121,7 +122,6 @@ __PACKAGE__->many_to_many(
   "post_tags",
   'tag',
 );
-
 
 # -------------------------------------------------------------------------
 # Methods
@@ -223,49 +223,9 @@ sub update {
   return $self;
 }
 
-sub ts_epoch {
+sub ts2tp {
   my $self = shift;
-  Time::Piece->strptime($self->timestamp, '%Y-%m-%d %T')->epoch;
-}
-
-sub _ts_human_inflect {
-  my ($self, $count, $unit) = @_;
-  sprintf "%d %s ago", $count, PL($unit, $count);
-}
-
-# Can't find anything on CPAN to carve this up the right way
-sub ts_human {
-  my ($self, $now) = @_;
-  $now ||= localtime;
-
-  my $ts = Time::Piece->strptime($self->timestamp, '%Y-%m-%d %T');
-  my $delta = $now - $ts;
-  my $seconds = $delta->seconds;
-
-  my $ts_human;
-  if ($seconds < 1) {
-    $ts_human = 'Just now';
-  }
-  elsif ($seconds < 60) {
-    $ts_human = $self->_ts_human_inflect($seconds, 'second');
-  }
-  elsif ($seconds < 3600) {
-    $ts_human = $self->_ts_human_inflect($seconds / 60, 'minute');
-  }
-  elsif ($seconds < 24 * 3600) {
-    $ts_human = $self->_ts_human_inflect($seconds / 3600, 'hour');
-  }
-  elsif ($seconds < 3 * 24 * 3600) {
-    $ts_human = $self->_ts_human_inflect($seconds / (24 * 3600), 'day');
-  }
-  elsif ($ts->year == $now->year) {
-    $ts_human = $ts->strftime('%d %b');
-  }
-  else {
-    $ts_human = $ts->strftime('%d %b %Y');
-  }
-
-  return $ts_human;
+  Time::Piece->strptime($self->timestamp, '%Y-%m-%d %T');
 }
 
 1;

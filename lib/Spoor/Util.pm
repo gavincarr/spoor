@@ -17,6 +17,7 @@ our @EXPORT_OK = qw(
   ts2tp_offset
   ts2iso8601
   ts2iso8601_offset
+  tp2human_duration
 );
 
 sub get_schema 
@@ -89,6 +90,45 @@ sub ts2iso8601_offset {
   my $tp = ts2tp($ts);
   $tp += $offset;
   tp2iso8601($tp);
+}
+
+sub _ts_human_inflect {
+  my ($count, $unit) = @_;
+  sprintf "%d %s ago", $count, PL($unit, $count);
+}
+
+# Can't find anything on CPAN to carve this up the right way
+sub tp2human_duration {
+  my ($tp, $now) = @_;
+  $now ||= localtime;
+
+  my $delta = $now - $tp;
+  my $seconds = $delta->seconds;
+
+  my $ts_human;
+  if ($seconds < 1) {
+    $ts_human = 'Just now';
+  }
+  elsif ($seconds < 60) {
+    $ts_human = _ts_human_inflect($seconds, 'second');
+  }
+  elsif ($seconds < 3600) {
+    $ts_human = _ts_human_inflect($seconds / 60, 'minute');
+  }
+  elsif ($seconds < 24 * 3600) {
+    $ts_human = _ts_human_inflect($seconds / 3600, 'hour');
+  }
+  elsif ($seconds < 3 * 24 * 3600) {
+    $ts_human = _ts_human_inflect($seconds / (24 * 3600), 'day');
+  }
+  elsif ($tp->year == $now->year) {
+    $ts_human = $tp->strftime('%d %b');
+  }
+  else {
+    $ts_human = $tp->strftime('%d %b %Y');
+  }
+
+  return $ts_human;
 }
 
 1;

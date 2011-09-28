@@ -53,12 +53,12 @@ __PACKAGE__->has_many(
   "tags",
   "Spoor::Schema::Result::Tag",
   { "foreign.type" => "self.id" },
-  {},
+  { cascade_copy => 0, cascade_delete => 0 },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07010 @ 2011-07-19 07:37:26
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Cv/KIqrZ6yTRX7BnJwmWEg
+# Created by DBIx::Class::Schema::Loader v0.07010 @ 2011-09-28 17:32:04
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:FXGxhKa7qBfu3vrea26T+A
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration

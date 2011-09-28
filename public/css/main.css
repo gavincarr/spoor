@@ -63,10 +63,13 @@ div.paused:hover {
   padding-bottom: 4px;
 }
 .post_meta {
-  margin: 3px 0px 0px 0px;
-  color: #aaa;
+  margin: 0px 0px 3px 0px;
+  color: #999;
   font-size: 0.8em;
-  float: right;
+  float: left;
+}
+.post_meta a {
+  color: #999;
 }
 .post_controls {
   margin: 0;
@@ -86,7 +89,7 @@ div.paused:hover {
 }
 
 #footer {
-  margin: 20px auto;
+  margin-top: 30px;
   color: #999;
   font-size: 0.85em;
 }

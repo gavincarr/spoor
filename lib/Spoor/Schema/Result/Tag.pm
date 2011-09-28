@@ -63,7 +63,7 @@ __PACKAGE__->has_many(
   "post_tags",
   "Spoor::Schema::Result::PostTag",
   { "foreign.tag_id" => "self.id" },
-  {},
+  { cascade_copy => 0, cascade_delete => 0 },
 );
 
 =head2 type
@@ -74,11 +74,16 @@ Related object: L<Spoor::Schema::Result::TagType>
 
 =cut
 
-__PACKAGE__->belongs_to("type", "Spoor::Schema::Result::TagType", { id => "type" }, {});
+__PACKAGE__->belongs_to(
+  "type",
+  "Spoor::Schema::Result::TagType",
+  { id => "type" },
+  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+);
 
 
-# Created by DBIx::Class::Schema::Loader v0.07010 @ 2011-07-19 07:37:26
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:3lc+2G1BKa9hhyYwsu3lkA
+# Created by DBIx::Class::Schema::Loader v0.07010 @ 2011-09-28 17:32:04
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:qjvWdEuHFpc9jJq17SLqPw
 
 
 =head2 posts

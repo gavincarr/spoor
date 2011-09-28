@@ -54,7 +54,12 @@ __PACKAGE__->belongs_to(
   "tag",
   "Spoor::Schema::Result::Tag",
   { id => "tag_id" },
-  { join_type => "LEFT" },
+  {
+    is_deferrable => 1,
+    join_type     => "LEFT",
+    on_delete     => "CASCADE",
+    on_update     => "CASCADE",
+  },
 );
 
 =head2 post
@@ -69,12 +74,17 @@ __PACKAGE__->belongs_to(
   "post",
   "Spoor::Schema::Result::Post",
   { id => "post_id" },
-  { join_type => "LEFT" },
+  {
+    is_deferrable => 1,
+    join_type     => "LEFT",
+    on_delete     => "CASCADE",
+    on_update     => "CASCADE",
+  },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07010 @ 2011-07-19 07:37:26
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:kOBbOe5mSfFDCX2s6grAsA
+# Created by DBIx::Class::Schema::Loader v0.07010 @ 2011-09-28 17:32:04
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:VlVuv4J+x+HAsL5+g3ZodQ
 
 __PACKAGE__->set_primary_key(qw(post_id tag_id));
 
