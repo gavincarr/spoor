@@ -4,11 +4,11 @@
 # Global settings
 
 # URL for this spoor instance
-url = http://nox:3001
+url = https://spoor.example.com:3000
 
 # Authentication settings
-#username = gavin
-#password = sekrit
+username = username
+password = sekrit
 
 # Delay in seconds before new posts begin to be forwarded on (for review/correction etc.)
 publish_delay = 120
@@ -18,8 +18,8 @@ display_limit = 50
 
 
 # -------------------------------------------------------------------------
-# Tag sections - only special tags need to be defined here: 'default' tags
-# and 'reset' tags. 
+# Tag configuration - two kinds of special tags need to be defined here:
+# 'default' tags and 'reset' tags. 
 #
 # Default tags are tags that are automatically added to posts i.e. they
 # don't have to be explicitly specified each time. This is just to make
@@ -35,6 +35,12 @@ display_limit = 50
 # You can optionally define other tags here too, usually so you can
 # associate one or more 'url' values with them.
 #
+# Format is:
+# [ <tag_label> ]           - internal use only
+# tag    = <tag>            - (required) hashtag text
+# type   = default|reset    - (optional) default or reset tags (described above)
+# url    = <url>            - (optional) url associated with this service
+# remove = yes|no           - (optional) whether to remove the hashtag from posts
 
 [ private ]
 tag = pri
