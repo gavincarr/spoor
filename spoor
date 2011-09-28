@@ -169,10 +169,10 @@ get '/post/:id' => sub {
   my $post = $schema->resultset('Post')->find($id)
     or $self->render('notfound');
 
-  $self->stash(post => $post);
-  $self->stash(js_list => undef);
-  $self->render('display');
-};
+  $self->stash(title    => $title);
+  $self->stash(post     => $post);
+  $self->stash(js_list  => undef);
+} => 'display';
 
 # -------------------------------------------------------------------------
 # Authentication

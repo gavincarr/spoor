@@ -26,7 +26,7 @@
 <a class="post_delete" href=""><img class="icon" src="/images/cross.png" title="delete post" alt="delete post"></a>
 </p>
 % }
-<p class="post_meta"><a href="" class="post_ts" data-epoch="<%= $tp->epoch %>" title="<%= $tp->strftime('%d %b %Y, %I:%M %p') %>"><%= Spoor::Util::tp2human_duration($tp, $now) %></a></p>
+<p class="post_meta"><span class="post_ts" data-epoch="<%= $tp->epoch %>" title="<%= $tp->strftime('%d %b %Y, %I:%M %p') %>"><%= Spoor::Util::tp2human_duration($tp, $now) %></span></p>
 </div>
 % }
 %# vim:ft=mason

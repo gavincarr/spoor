@@ -37,7 +37,7 @@ a:hover {
 
 div.post {
   clear: both;
-  padding: 10px 1px;
+  padding: 10px 1px 19px;
   border-top: 1px dotted #ccc;
 }
 div.paused {
