@@ -24,11 +24,14 @@ use Spoor::Util qw(get_schema ts2iso8601_offset);
 # Config stuff
 #
 
-app->secret('d1f78fc8-d6df-44f0-835a-23ad39cda20f');
-
 my $config = Spoor::Config->new;
 my $spoor_url = $config->get('url')
   or die "Missing 'url' setting in spoor.conf\n";
+
+my $secret = $config->get('secret')
+  or die "Missing 'secret' setting in spoor.conf\n";
+app->secret($secret);
+
 my $schema = get_schema($config->get('environment'));
 
 # -------------------------------------------------------------------------

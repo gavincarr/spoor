@@ -3,6 +3,10 @@
 # -------------------------------------------------------------------------
 # Global settings
 
+# Instance secret - change this to a random string of your choice
+# (used for generating secure signed cookies)
+secret = f097c174-12bb-4ae2-9d64-a108f7d94024
+
 # URL for this spoor instance
 url = https://spoor.example.com:3000
 
