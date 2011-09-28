@@ -1,0 +1,4 @@
+% layout 'default';
+<h1>Login failed!</h1>
+<p>Username or password was incorrect.</p>
+<p><a href="/">Back to Home</a>&nbsp;|&nbsp;<a href="/login">Login again</a></p>

@@ -16,9 +16,9 @@
 <%= content %>
 <div id="footer">
 <a href="http://github.com/gavincarr/spoor/">Powered by Spoor</a>.
-% if (my $user = session 'user') {
-Authenticated: <%= $user %>.
-% }
+%# if (my $user = session 'user') {
+%# Authenticated: <%= $user %>.
+%# }
 </div><!-- footer -->
 </div><!-- content -->
 %# JavaScript at the bottom for fast page loading

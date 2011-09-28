@@ -103,14 +103,14 @@ helper render_rs => sub {
 
   else {
     $self->stash(rs => $rs);
-    $self->render_html;
+    $self->render_html(template => 'index');
   }
-} => 'index';
+};
 
 get '/' => sub {
   my $self = shift;
   $self->render_rs('/index');
-};
+} => 'index';
 
 get '/index' => sub {
   my $self = shift;
@@ -179,16 +179,28 @@ get '/post/:id' => sub {
 
 helper 'login' => sub {
   my $self = shift;
+  my $log = app->log;
 
   my $conf_username = $config->get('username');
   my $conf_password = $config->get('password');
+  unless (defined $conf_username && defined $conf_password) {
+    $log->warn("Config 'username' parameter not defined") if ! defined $conf_username;
+    $log->warn("Config 'password' parameter not defined") if ! defined $conf_password;
+    return 0;
+  }
 
   return 1 if $self->basic_auth(
     Spoor => sub {
       my ($user, $pass) = @_;
-      return 0 unless defined $user && defined $pass;
-      return 0 unless defined $conf_username && defined $conf_password;
+      unless (defined $user && defined $pass) {
+        $log->warn("No 'user' parameter passed to basic_auth checking") if ! defined $user;
+        $log->warn("No 'pass' parameter passed to basic_auth checking") if ! defined $pass;
+        return 0;
+      }
+
+      $log->debug("Checking user '$user', pass '$pass' ...");
       if ($user eq $conf_username && $pass eq $conf_password) {
+        $log->info("User/pass found and good, setting session for $user");
         $self->session(user => $user);
         return 1;
       }
@@ -200,9 +212,15 @@ helper 'login' => sub {
 
 get '/login' => sub {
   my $self = shift;
-  $self->login;
-  $self->redirect_to('index');
-};
+  if ($self->login) {
+    $self->redirect_to('index');
+  }
+  else {
+    $self->stash(title => 'Login unsuccessful');
+    $self->stash(js_list => undef);
+    $self->render(template => 'badlogin');
+  }
+} => 'login';
 
 get '/logout' => sub {
   my $self = shift;

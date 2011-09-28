@@ -19,7 +19,7 @@
 <p class="post_controls">
 %   if ($post->pause_b) {
 <a class="post_unpause" href=""><img class="icon" src="/images/control_play.png" title="unpause post" alt="unpause post"></a>
-%   } elsif ($post->ts_epoch >= $ts_cutoff_epoch) {
+%   } elsif ($tp->epoch >= $ts_cutoff_epoch) {
 <a class="post_pause" href=""><img class="icon" src="/images/control_pause.png" title="pause post" alt="pause post"></a>
 %   }
 <a class="post_edit" href=""><img class="icon" src="/images/application_edit.png" title="edit post" alt="edit post"></a>
