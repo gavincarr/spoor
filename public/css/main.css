@@ -37,15 +37,14 @@ a:hover {
 
 div.post {
   clear: both;
-  padding: 10px 1px 19px;
+  padding: 10px 1px 21px;
   border-top: 1px dotted #ccc;
 }
 div.paused {
   background-color: #ffd;
 }
 div.post:hover {
-  background-color: rgb(210, 230, 250);
-  background-color: rgba(210, 230, 250, 0.4);
+  background-color: #ffff99;
 }
 div.paused:hover {
   background-color: #ffc;
