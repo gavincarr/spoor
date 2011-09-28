@@ -1,13 +1,12 @@
 body {
-  color: #333;
-  font-family: 'Lucida Sans Unicode', 'Lucida Grande',sans-serif;
   font-size: 0.8em;
-  background-color: rgb(200, 225, 250);
+/* color: #333; */
+/* background-color: rgb(200, 225, 250); */
 }
 
 h1 {
-  margin: 10px auto;
-  font-size: 1.8em;
+  font-size: 1.7em;
+  color: #666;
 }
 
 img {
@@ -18,11 +17,10 @@ img.icon {
 }
 
 #content {
-  width: 750px;
+  width: auto;
   padding: 10px 30px;
-  margin: 20px auto;
-  background-color: #fff;
-  -moz-border-radius: 6px;
+  margin: 10px 5%;
+  line-height: 1.5;
 }
 a {
   color: #47c;
@@ -38,6 +36,7 @@ a:hover {
 }
 
 div.post {
+  clear: both;
   padding: 10px 1px;
   border-top: 1px dotted #ccc;
 }
@@ -67,6 +66,7 @@ div.paused:hover {
   margin: 3px 0px 0px 0px;
   color: #aaa;
   font-size: 0.8em;
+  float: right;
 }
 .post_controls {
   margin: 0;
@@ -83,4 +83,13 @@ div.paused:hover {
 #post_chars {
   left: -55px;
   display: none;
+}
+
+#footer {
+  margin: 20px auto;
+  color: #999;
+  font-size: 0.85em;
+}
+#footer a {
+  color: #999;
 }
