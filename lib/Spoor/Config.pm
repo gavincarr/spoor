@@ -12,7 +12,7 @@ sub _init {
 
   my $config = $self->{config} = Config::Tiny->read( "$SPOOR_HOME/conf/spoor.conf" );
   $self->{tag} = {};
-  $self->{default_tags} = [];
+  $self->{typemap} = {};
 
   for my $section (keys %$config) {
     next if $section eq '_';
@@ -25,15 +25,17 @@ sub _init {
     $self->{tag}->{$tag} = $config->{$section};
 
     next unless $config->{$section}->{type};
-    push @{$self->{default_tags}}, $tag
-      if $config->{$section}->{type} eq 'default';
+
+#   $self->{log}->debug("adding $tag to $config->{$section}->{type} typemap") if $self->{log};
+    $self->{typemap}->{ $config->{$section}->{type} }->{ $tag } = 1;
   }
 }
 
 sub new {
   my $class = shift;
-  my $self = bless {}, $class;
+  my $self = bless { @_ }, $class;
   $self->_init;
+# $self->{log}->debug("private_tags: " . join(',', $self->private_tags)) if $self->{log};
   return $self;
 }
 
@@ -52,6 +54,11 @@ sub is_default_tag {
   return 1 if ($self->{tag}->{$tag}->{type} || '') eq 'default';
 }
 
+sub is_private_tag {
+  my ($self, $tag) = @_;
+  return 1 if ($self->{tag}->{$tag}->{type} || '') eq 'private';
+}
+
 sub is_remove_tag {
   my ($self, $tag) = @_;
   return 1 if ($self->{tag}->{$tag}->{remove} || '') =~ m/^1|yes|true$/i;
@@ -65,7 +72,14 @@ sub tags {
 
 sub default_tags {
   my $self = shift;
-  return wantarray ? @{$self->{default_tags}} : $self->{default_tags};
+  my @tags = sort keys %{ $self->{typemap}->{default} };
+  return wantarray ? @tags : \@tags;
+}
+
+sub private_tags {
+  my $self = shift;
+  my @tags = sort keys %{ $self->{typemap}->{private} };
+  return wantarray ? @tags : \@tags;
 }
 
 1;

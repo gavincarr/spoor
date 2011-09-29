@@ -24,7 +24,7 @@ use Spoor::Util qw(get_schema ts2iso8601_offset);
 # Config
 #
 
-my $config = Spoor::Config->new;
+my $config = Spoor::Config->new(log => app->log);
 my $spoor_url = $config->get('url')
   or die "Missing 'url' setting in spoor.conf\n";
 
@@ -88,8 +88,21 @@ helper render_atom => sub {
 helper render_rs => sub {
   my ($self, $path, $rs) = @_;
 
+  my @where = (delete_b => 0);
+
+  # If not logged in, omit posts tagged private
+  if (! $self->session('user')) {
+    # TODO: figure out how to do this with bind values
+    my $private_tags_list = sprintf q('%s'), join(q(', '), $config->private_tags);
+    app->log->debug("private_tags_list: $private_tags_list");
+    @where = ( -and => [
+      delete_b => 0,
+      \["not exists (select 1 from post_tag pt join tag t on (t.id = pt.tag_id) where pt.post_id = me.id and t.tag in ( $private_tags_list ))"],
+    ]);
+  }
+
   $rs ||= $schema->resultset('Post')->search({
-    delete_b    => 0,
+    @where,
   }, {
     order_by    => 'timestamp desc',
     rows        => $config->get('display_limit') || 100,
@@ -120,6 +133,11 @@ get '/index' => sub {
 get '/tag/:tag' => sub {
   my $self = shift;
   my $tag = $self->param('tag');
+
+  # Private tags are only viewable by user
+  if (! $self->session('user') && $config->is_private_tag($tag)) {
+    return $self->redirect_to('index');
+  }
 
   my $rs = $schema->resultset('Post')->search({
     'tag.type'  => '#',
