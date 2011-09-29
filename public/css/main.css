@@ -41,10 +41,10 @@ div.post {
   border-top: 1px dotted #ccc;
 }
 div.paused {
-  background-color: #ffd;
+  background-color: #ffc;
 }
 div.post:hover {
-  background-color: #ffff99;
+  background-color: #ffc;
 }
 div.paused:hover {
   background-color: #ffc;
