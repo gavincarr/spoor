@@ -25,49 +25,52 @@ display_limit = 50
 
 
 # -------------------------------------------------------------------------
-# Tag configuration - two kinds of special tags need to be defined here:
-# 'default' tags and 'reset' tags. 
+# Tag configuration - three kinds of special tags need to be defined here:
+# 'default' tags, 'reset' tags, and 'private' tags.
 #
 # Default tags are tags that are automatically added to posts i.e. they
 # don't have to be explicitly specified each time. This is just to make
 # your 'normal' usage easy e.g. you might make #i for identica and #t for
-# twitter default tags, but leave other endpoints like #bm, for delicious, 
+# twitter default tags, but leave other endpoints like #bm, for bookmarks, 
 # and #fb facebook as standard tags, which you'd add explicitly to use.
 # 
 # Reset tags are used to turn off all default tags, so that only tags
-# explicitly present on the post will be used. I tend to use #pri (for 
-# private) for this. Note that default tags are also treated as reset tags 
-# if they're used explicitly.
+# explicitly present on the post will be used. I tend to use #nf 
+# ('no-forward')for this. Note that default tags are also treated as reset
+# tags if they're added explicitly.
 #
-# You can optionally define other tags here too, usually so you can
-# associate one or more 'url' values with them.
+# Private tags are used to mark a post as private i.e. not intended for
+# public consumption. Private tags are not displayed in the web interface
+# or in feeds. Private tags are also treated as reset tags, so they are
+# not forwarded anywhere by default. You need to add forwarding tags
+# explicitly if you do want to forward a private post.
 #
 # Format is:
-# [ <tag_label> ]           - internal use only
-# tag    = <tag>            - (required) hashtag text
-# type   = default|reset    - (optional) default or reset tags (described above)
-# url    = <url>            - (optional) url associated with this service
-# remove = yes|no           - (optional) whether to remove the hashtag from posts
+# [ <tag_label> ]                   - (required) documentation only
+# tag    = <tag>                    - (required) hashtag text
+# type   = default|reset|private    - (optional) default or reset tags (described above)
+# remove = yes|no                   - (optional) whether to remove the hashtag from posts
+
+[ noforward ]
+tag = nf
+type = reset
 
 [ private ]
 tag = pri
-type = reset
+type = private
 
 [ identica ]
 tag = i
-url = http://identi.ca/gavincarr
 type = default
 remove = yes
 
 [ twitter ]
 tag = t
-url = http://twitter.com/gavincarr
 type = default
 remove = yes
 
 [ bookmark ]
 tag = bm
-url = http://delicious.com/gavincarr
 
 [ facebook ]
 tag = fb
