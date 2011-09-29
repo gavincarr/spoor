@@ -79,7 +79,7 @@ $(function() {
           if (div.hasClass('paused')) {
             // If we were paused, remove the class, and reset pause button
             div.removeClass('paused');
-            $('.post_unpause', div).html('<a class="post_pause" href="" title="pause post"><img class="icon" src="/images/control_pause.png" alt="pause post"></a>');
+            $('.post_unpause', div).html('<a class="post_pause" href="" title="pause post"><img class="icon" src="/images/post_pause.png" alt="pause post"></a>');
           }
         }
         // If hit cutoff, just remove buttons
@@ -101,7 +101,7 @@ $(function() {
       url:     '/post/' + id,
       data:     { forward: 0 },
       success: function() {
-        pause.html('<a class="post_unpause" href=""><img class="icon" src="/images/control_play.png" title="unpause post" alt="unpause post"></a>');
+        pause.html('<a class="post_unpause" href=""><img class="icon" src="/images/post_unpause.png" title="unpause post" alt="unpause post"></a>');
         $('.post_ffwd', div).show();    // unhide ffwd button if hidden
         div.addClass('paused');
       },
@@ -123,7 +123,7 @@ $(function() {
         var post_ts = $('.post_ts', div).attr('data-epoch');
         // If there's still time before the cutoff, re-display pause/ffwd buttons
         if (post_ts > ts_cutoff) {
-          pause.html('<a class="post_pause" href="" title="pause post"><img class="icon" src="/images/control_pause.png" alt="pause post"></a>');
+          pause.html('<a class="post_pause" href="" title="pause post"><img class="icon" src="/images/post_pause.png" alt="pause post"></a>');
           $('.post_ffwd', div).show();  // unhide ffwd button if hidden
         }
         // If cutoff time, remove both ffwd and pause buttons

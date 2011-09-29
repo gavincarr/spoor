@@ -19,15 +19,15 @@
 % if ($user) {
 <p class="post_controls">
 %   if (! $post->forward_flag) {
-<a class="post_unpause" href=""><img class="icon" src="/images/control_play.png" title="unpause post" alt="unpause post"></a>
+<a class="post_unpause" href=""><img class="icon" src="/images/post_unpause.png" title="unpause post" alt="unpause post"></a>
 %   } elsif ($tp->epoch >= $ts_cutoff_epoch) {
-<a class="post_pause" href="" title="pause post"><img class="icon" src="/images/control_pause.png" alt="pause post"></a>
+<a class="post_pause" href="" title="pause post"><img class="icon" src="/images/post_pause.png" alt="pause post"></a>
 %   }
 % if (! $post->forward_flag || $tp->epoch >= $ts_cutoff_epoch) {
-<a class="post_ffwd<%= $post->forward_flag == 2 ? ' hide' : '' %>" href="" title="publish immediately"><img class="icon" src="/images/control_fastforward.png" alt="publish immediately"></a>
+<a class="post_ffwd<%= $post->forward_flag == 2 ? ' hide' : '' %>" href="" title="publish immediately"><img class="icon" src="/images/post_ffwd.png" alt="publish immediately"></a>
 % }
-<a class="post_edit" href="" title="edit post"><img class="icon" src="/images/application_edit.png" alt="edit post"></a>
-<a class="post_delete" href="" title="delete post"><img class="icon" src="/images/cross.png" alt="delete post"></a>
+<a class="post_edit" href="" title="edit post"><img class="icon" src="/images/post_edit.png" alt="edit post"></a>
+<a class="post_delete" href="" title="delete post"><img class="icon" src="/images/post_delete.png" alt="delete post"></a>
 </p>
 % }
 <p class="post_meta"><span class="post_ts" data-epoch="<%= $tp->epoch %>" title="<%= $tp->strftime('%d %b %Y, %I:%M %p') %>"><%= Spoor::Util::tp2human_duration($tp, $now) %></span></p>
