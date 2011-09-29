@@ -8,6 +8,7 @@ Build.bat
 MANIFEST.bak
 Notes
 TODO
+public/images/avatar.*
 conf/*.conf
 delta/applied/*
 var/*
