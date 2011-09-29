@@ -18,7 +18,7 @@ use FindBin qw($Bin);
 use lib "$Bin/lib";
 use lib 'lib';
 use Spoor::Config;
-use Spoor::Util qw(get_schema ts2iso8601_offset);
+use Spoor::Util qw(get_schema ts2iso8601 ts2iso8601_offset);
 
 # -------------------------------------------------------------------------
 # Config
@@ -78,7 +78,14 @@ helper render_atom => sub {
     $entry->id("$spoor_url/post/$id");
     $entry->title($post->post_processed);
     $entry->content($post->post_processed);
-    $entry->published(ts2iso8601_offset($post->timestamp, $config->get('publish_delay') || 180));
+    # forward_flag == 1 is a normal forward after publish_delay seconds
+    if ($post->forward_flag == 1) {
+      $entry->published(ts2iso8601_offset($post->timestamp, $config->get('publish_delay') || 180));
+    }
+    # forward_flag == 2 means publish immediately, ignoring publish_delay
+    elsif ($post->forward_flag == 2) {
+      $entry->published(ts2iso8601($post->timestamp));
+    }
     $feed->add_entry($entry);
   }
 
@@ -366,6 +373,9 @@ del '/post/:id' => sub {
 };
 
 # -------------------------------------------------------------------------
+
+# Bump up default session expiration time to 3h
+app->sessions->default_expiration(3 * 3600);
 
 app->start;
 

@@ -41,13 +41,13 @@ div.post {
   border-top: 1px dotted #ccc;
 }
 div.paused {
-  background-color: #ffc;
+  background-color: #ff9;
 }
 div.post:hover {
   background-color: #ffc;
 }
 div.paused:hover {
-  background-color: #ffc;
+  background-color: #ff8;
 }
 
 #post_form {

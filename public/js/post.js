@@ -1,4 +1,6 @@
 $(function() {
+  $('.hide').hide();
+
   // Convert post to textarea for edit
   $('div#content').delegate('.post_edit', 'click', function() {
     var div = $(this).parents('div:first');
@@ -58,6 +60,36 @@ $(function() {
     return false;
   });
 
+  // Mark post as ready-to-forward
+  $('div#content').delegate('.post_ffwd', 'click', function() {
+    var ffwd = $(this);
+    var div = ffwd.parents('div:first');
+    var id = div.attr('id').replace(/^post/,'');
+    $.ajax({
+      type:    'POST',
+      url:     '/post/' + id,
+      data:     { forward: 2 },
+      success: function() {
+        var ts_cutoff = Math.ceil((new Date() - $('#publish_delay').text() * 1000) / 1000);
+        var post_ts = $('.post_ts', div).attr('data-epoch');
+        // If still time before cutoff, hide ffwd, reset to pause button if required
+        if (post_ts > ts_cutoff) {
+          ffwd.hide();
+          if (div.hasClass('paused')) {
+            // If we were paused, remove the class, and reset pause button
+            div.removeClass('paused');
+            $('.post_unpause', div).html('<a class="post_pause" href="" title="pause post"><img class="icon" src="/images/control_pause.png" alt="pause post"></a>');
+          }
+        }
+        // If hit cutoff, just remove buttons
+        else {
+          ffwd.remove();
+          $('.post_unpause', div).remove();
+        }
+      },
+    });
+    return false;
+  });
   // Mark post as paused
   $('div#content').delegate('.post_pause', 'click', function() {
     var pause = $(this);
@@ -69,7 +101,8 @@ $(function() {
       data:     { forward: 0 },
       success: function() {
         pause.html('<a class="post_unpause" href=""><img class="icon" src="/images/control_play.png" title="unpause post" alt="unpause post"></a>');
-        div.toggleClass('paused');
+        $('.post_ffwd', div).show();    // unhide ffwd button if hidden
+        div.addClass('paused');
       },
     });
     return false;
@@ -84,15 +117,18 @@ $(function() {
       url:     '/post/' + id,
       data:     { forward: 1 },
       success: function() {
+        div.removeClass('paused');
         var ts_cutoff = Math.ceil((new Date() - $('#publish_delay').text() * 1000) / 1000);
         var post_ts = $('.post_ts', div).attr('data-epoch');
+        // If there's still time before the cutoff, re-display pause/ffwd buttons
         if (post_ts > ts_cutoff) {
-          pause.html('<a class="post_pause" href=""><img class="icon" src="/images/control_pause.png" title="pause post" alt="pause post"></a>');
-          div.toggleClass('paused');
+          pause.html('<a class="post_pause" href="" title="pause post"><img class="icon" src="/images/control_pause.png" alt="pause post"></a>');
+          $('.post_ffwd', div).show();  // unhide ffwd button if hidden
         }
+        // If cutoff time, remove both ffwd and pause buttons
         else {
-          pause.hide();
-          div.toggleClass('paused');
+          pause.remove();
+          $('.post_ffwd', div).remove();
         }
       },
     });
