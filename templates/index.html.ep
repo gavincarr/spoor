@@ -1,12 +1,13 @@
 % layout 'default';
 % my $user = session 'user';
 <h1><%= $title %></h1>
-<div id="publish_delay" style="display:none"><%= $publish_delay %></div>
 % if ($user) {
 <form id="post_form" action="" method="post">
+<div>
 <textarea id="post_data" name="post" rows="3" cols="70"></textarea>
 <input id="post_submit" name="submit" type="submit" value="Post"></input>
 <span id="post_chars" class="post_chars">0</span>
+</div>
 </form>
 % }
 % my $now = Time::Piece->localtime;
@@ -32,4 +33,5 @@
 <p class="post_meta"><span class="post_ts" data-epoch="<%= $tp->epoch %>" title="<%= $tp->strftime('%d %b %Y, %I:%M %p') %>"><%= Spoor::Util::tp2human_duration($tp, $now) %></span></p>
 </div>
 % }
+<div id="publish_delay" style="display:none"><%= $publish_delay %></div>
 %# vim:ft=mason

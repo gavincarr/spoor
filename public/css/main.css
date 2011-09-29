@@ -55,7 +55,7 @@ div.paused:hover {
 }
 #post_submit, .post_save {
   position: relative;
-  top: -5px;
+  top: 0px;
 }
 .post_text {
   margin: 0px;
@@ -79,11 +79,12 @@ div.paused:hover {
   font-size: 16px;
   font-weight: bold;
   position: relative;
-  top: -45px;
-  left: -128px;
+  top: 45px;
+  left: -117px;
+  */
 }
 #post_chars {
-  left: -55px;
+  left: -50px;
   display: none;
 }
 

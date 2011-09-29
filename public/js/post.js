@@ -18,6 +18,7 @@ $(function() {
                     '<input class="post_save" type="submit" value="Cancel"></input>\n' +
                     '<span class="post_chars">' + data.post.length + '</span>'
                    );
+      $('textarea', div).focus();
     });
     return false;
   });
