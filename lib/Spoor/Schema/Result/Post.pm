@@ -105,7 +105,6 @@ __PACKAGE__->has_many(
 
 use Regexp::Common qw(URI microsyntax);
 use Time::Piece;
-use Lingua::EN::Inflect qw(PL);
 
 use Spoor::Config;
 

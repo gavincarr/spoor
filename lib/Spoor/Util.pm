@@ -4,6 +4,7 @@ use strict;
 use Exporter::Lite;
 use Time::Piece;
 use Regexp::Common qw(microsyntax);
+use Lingua::EN::Inflect qw(PL);
 
 use Spoor::Auth;
 use Spoor::Schema;
