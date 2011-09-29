@@ -114,7 +114,7 @@ sub _process_feed {
     next if $id <= $st->{id};
 #   next if $st->{published} && $entry->published lt $st->{published};
 
-    # Finish if next published date is in the future
+    # Finish if next published date is in the future (for publish_delay handling)
     last if $entry->published gt gmtime->strftime('%Y-%m-%dT%TZ');
 
     # New entry - process

@@ -9,4 +9,5 @@ MANIFEST.bak
 Notes
 TODO
 conf/*.conf
+delta/applied/*
 var/*

@@ -12,12 +12,12 @@
 % my $now = Time::Piece->localtime;
 % while (my $post = $rs->next) {
 %   my $tp = $post->ts2tp;
-<div id="post<%= $post->id %>" class="post<%= $post->pause_b ? ' paused' : '' %>">
+<div id="post<%= $post->id %>" class="post<%= $post->forward_flag ? '' : ' paused' %>">
 <a id="<%= $post->id %>"></a>
 <p class="post_text"><%== $post->post_html %></p>
 % if ($user) {
 <p class="post_controls">
-%   if ($post->pause_b) {
+%   if (! $post->forward_flag) {
 <a class="post_unpause" href=""><img class="icon" src="/images/control_play.png" title="unpause post" alt="unpause post"></a>
 %   } elsif ($tp->epoch >= $ts_cutoff_epoch) {
 <a class="post_pause" href=""><img class="icon" src="/images/control_pause.png" title="pause post" alt="pause post"></a>

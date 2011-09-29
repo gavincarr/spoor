@@ -6,7 +6,7 @@ create table post (
   post_processed    text,
   post_html         text,
   timestamp         integer default CURRENT_TIMESTAMP,
-  pause_b           tinyint default 0,
+  forward_flag      tinyint default 1,
   delete_b          tinyint default 0
 );
 

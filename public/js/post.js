@@ -5,7 +5,7 @@ $(function() {
     var text_elt = $('.post_text', div);
     var id = div.attr('id').replace(/^post/,'');
     // Pause posts while editing
-    $.post('/post/' + id, { pause: 1 });
+    $.post('/post/' + id, { forward: 0 });
     // Fetch the raw post to display for editing
     $.getJSON('/post/' + id + '.json', function(data) {
       $('.post_controls', div).hide();
@@ -38,7 +38,7 @@ $(function() {
       text_elt.html(text_elt.data('html'));
     }
     // Unpause posts once finished editing
-    $.post('/post/' + id, { pause: 0 });
+    $.post('/post/' + id, { forward: 1 });
     // Redisplay controls
     $('.post_controls', div).show();
     return false;
@@ -66,7 +66,7 @@ $(function() {
     $.ajax({
       type:    'POST',
       url:     '/post/' + id,
-      data:     { pause: 1 },
+      data:     { forward: 0 },
       success: function() {
         pause.html('<a class="post_unpause" href=""><img class="icon" src="/images/control_play.png" title="unpause post" alt="unpause post"></a>');
         div.toggleClass('paused');
@@ -82,7 +82,7 @@ $(function() {
     $.ajax({
       type:    'POST',
       url:     '/post/' + id,
-      data:     { pause: 0 },
+      data:     { forward: 1 },
       success: function() {
         var ts_cutoff = Math.ceil((new Date() - $('#publish_delay').text() * 1000) / 1000);
         var post_ts = $('.post_ts', div).attr('data-epoch');

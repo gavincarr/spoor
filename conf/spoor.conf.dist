@@ -41,15 +41,15 @@ display_limit = 50
 #
 # Private tags are used to mark a post as private i.e. not intended for
 # public consumption. Private tags are not displayed in the web interface
-# or in feeds. Private tags are also treated as reset tags, so they are
-# not forwarded anywhere by default. You need to add forwarding tags
-# explicitly if you do want to forward a private post.
+# or in feeds. This also means that private posts cannot be forwarded,
+# since the forwarders drive off the feeds.
 #
 # Format is:
 # [ <tag_label> ]                   - (required) documentation only
 # tag    = <tag>                    - (required) hashtag text
 # type   = default|reset|private    - (optional) default or reset tags (described above)
 # remove = yes|no                   - (optional) whether to remove the hashtag from posts
+#                                                before forwarding
 
 [ noforward ]
 tag = nf
@@ -68,13 +68,4 @@ remove = yes
 tag = t
 type = default
 remove = yes
-
-[ bookmark ]
-tag = bm
-
-[ facebook ]
-tag = fb
-
-[ obsolete ]
-tag = mb
 

@@ -67,8 +67,8 @@ helper render_atom => sub {
   my $feed = $new_feed->();
 
   while (my $post = $rs->next) {
-    # If we find a post that is paused, reset the feed and start again with next
-    if ($post->pause_b) {
+    # If we find a post that is paused, reset the feed and start again from the next post
+    if (! $post->forward_flag) {
       $feed = $new_feed->();
       next;
     }
@@ -97,7 +97,8 @@ helper render_rs => sub {
     app->log->debug("private_tags_list: $private_tags_list");
     @where = ( -and => [
       delete_b => 0,
-      \["not exists (select 1 from post_tag pt join tag t on (t.id = pt.tag_id) where pt.post_id = me.id and t.tag in ( $private_tags_list ))"],
+      \["not exists (select 1 from post_tag pt join tag t on (t.id = pt.tag_id)" .
+        "where pt.post_id = me.id and t.tag in ( $private_tags_list ))"],
     ]);
   }
 
@@ -105,7 +106,7 @@ helper render_rs => sub {
     @where,
   }, {
     order_by    => 'timestamp desc',
-    rows        => $config->get('display_limit') || 100,
+    rows        => $config->get('display_limit') || 50,
   });
   return '' unless $rs;
 
@@ -259,7 +260,7 @@ under sub {
 # DELETE /post/<id> - delete
 # POST   /post/<id> - partial updates (yes I know, not entirely restful ...)
 #          post  => 'updated post'
-#          pause => 0/1
+#          forward => 0/1/2
 #          delete => 0
 #
 
@@ -328,7 +329,7 @@ post '/post/:id' => sub {
 
   my %param_map = (
     post    => 'post_raw',
-    pause   => 'pause_b',
+    forward => 'forward_flag',
     delete  => 'delete_b',
   );
   my %update;
@@ -348,7 +349,7 @@ post '/post/:id' => sub {
 
   else {
     return $self->render(status => 403,
-      json => { error => "No valid parameters found [post|pause|delete]" });
+      json => { error => "No valid parameters found [post|forward|delete]" });
   }
 };
 

@@ -46,10 +46,10 @@ __PACKAGE__->table("post");
   default_value: current_timestamp
   is_nullable: 1
 
-=head2 pause_b
+=head2 forward_flag
 
   data_type: 'tinyint'
-  default_value: 0
+  default_value: 1
   is_nullable: 1
 
 =head2 delete_b
@@ -75,8 +75,8 @@ __PACKAGE__->add_columns(
     default_value => \"current_timestamp",
     is_nullable   => 1,
   },
-  "pause_b",
-  { data_type => "tinyint", default_value => 0, is_nullable => 1 },
+  "forward_flag",
+  { data_type => "tinyint", default_value => 1, is_nullable => 1 },
   "delete_b",
   { data_type => "tinyint", default_value => 0, is_nullable => 1 },
 );
@@ -100,8 +100,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07010 @ 2011-09-28 17:52:19
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:NiNxSrfvwAIgihitCSzVSg
+# Created by DBIx::Class::Schema::Loader v0.07010 @ 2011-09-29 18:21:39
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:zunH90ZNbMzfbPDpPOOUUg
 
 use Regexp::Common qw(URI microsyntax);
 use Time::Piece;
