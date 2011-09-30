@@ -1,6 +1,13 @@
 % layout 'default';
 % my $tp = $post->ts2tp;
 <h1><%== $config->get('avatar') ? '<img id="avatar" src="' . $config->get('avatar') . '">' : '' %><%= $title %></h1>
+% if (my $elsewhere = $config->elsewhere) {
+<p id="elsewhere">Syndicating to:
+%   for my $entry (@$elsewhere) {
+<a href="<%= $entry->{url} %>" title="<%= $entry->{name} . ': ' .  $entry->{url} %>"><img src="/images/<%= $entry->{name} %>.png" alt="*"></a>
+%   }
+</p>
+% }
 <div id="post<%= $post->id %>" class="post">
 <a id="<%= $post->id %>"></a>
 <p class="post_text"><%== $post->post_html %></p>

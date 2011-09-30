@@ -7,9 +7,18 @@ body {
 h1 {
   font-size: 1.7em;
   color: #666;
+  float: left;
 }
 #avatar {
   margin-right: 8px;
+}
+p#elsewhere {
+  float: right;
+  font-size: 0.85em;
+  color: #999;
+}
+p#elsewhere a {
+  margin: 0 3px;
 }
 
 img {
@@ -104,3 +113,4 @@ div.paused:hover {
 #footer a {
   color: #999;
 }
+

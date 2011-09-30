@@ -2,20 +2,32 @@ package Spoor::Config;
 
 use strict;
 use Config::Tiny;
-use File::Basename;
-
-# Set $SPOOR_HOME to our grandparent directory
-my $SPOOR_HOME = dirname dirname dirname $INC{"Spoor/Config.pm"};
+use Carp;
 
 sub _init {
   my $self = shift;
 
-  my $config = $self->{config} = Config::Tiny->read( "$SPOOR_HOME/conf/spoor.conf" );
+  croak "Config file '$self->{file}' not found" unless -f $self->{file};
+
+  my $config = $self->{config} = Config::Tiny->read( $self->{file} );
   $self->{tag} = {};
   $self->{typemap} = {};
 
   for my $section (keys %$config) {
     next if $section eq '_';
+
+    # Setup top-level elsewhere section as an array of name/url hashrefs
+    if ($section eq 'elsewhere') {
+      $self->{elsewhere} = [];
+      my $keys = delete $config->{$section}->{keys} || '';
+      my @keys = split(/\s*[,\s]\s*/, $keys);
+      @keys = sort(keys %{ $config->{$section} }) unless @keys;
+      for my $key (@keys) {
+        push @{ $self->{elsewhere} }, { name => $key, url => $config->{elsewhere}->{$key} };
+      }
+      next;
+    }
+
     if (! $config->{$section}->{tag}) {
       warn "Config section '$section' has no 'tag' element - skipping\n";
       next;
@@ -82,6 +94,11 @@ sub private_tags {
   return wantarray ? @tags : \@tags;
 }
 
+sub elsewhere {
+  my $self = shift;
+  $self->{elsewhere} || [];
+}
+
 1;
 
 =head1 NAME
@@ -102,6 +119,9 @@ Spoor::Config - spoor configuration data
     @defaults = $config->default_tags;
     print $config->is_reset_tag($tag);
     print $config->is_remove_tag($tag);
+
+    # Elsewhere data is presented as an arrayref of name/url hashref entries
+    printf "%s: %s\n", $config->elsewhere->[0]->{name}, $config->elsewhere->[0]->{url};
 
 =cut
 

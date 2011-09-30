@@ -1,6 +1,13 @@
 % layout 'default';
 % my $user = session 'user';
 <h1><%== $config->get('avatar') ? '<img id="avatar" src="' . $config->get('avatar') . '">' : '' %><%= $title %></h1>
+% if (my $elsewhere = $config->elsewhere) {
+<p id="elsewhere">Syndicating to:
+%   for my $entry (@$elsewhere) {
+<a href="<%= $entry->{url} %>" title="<%= $entry->{name} . ': ' .  $entry->{url} %>"><img src="/images/<%= $entry->{name} %>.png" alt="*"></a>
+%   }
+</p>
+% }
 % if ($user) {
 <form id="post_form" action="" method="post" style="display:none">
 <textarea id="post_data" name="post" rows="3" cols="70"></textarea>

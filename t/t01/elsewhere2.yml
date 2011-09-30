@@ -1,0 +1,9 @@
+---
+- name: delicious
+  url: http://delicious.com/gavincarr/
+- name: identica
+  url: http://identi.ca/gavincarr/
+- name: pinboard
+  url: http://pinboard.com/gavincarr
+- name: twitter
+  url: http://twitter.com/gavincarr
