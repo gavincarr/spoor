@@ -81,11 +81,13 @@ div.paused:hover {
   position: relative;
   top: 45px;
   left: -117px;
-  */
 }
 #post_chars {
   left: -50px;
   display: none;
+}
+.post_form_icon {
+  float: right;
 }
 
 #footer {

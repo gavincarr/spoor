@@ -144,4 +144,15 @@ $(function() {
   $('#post_data').focus(function() {
     $('#post_chars').show();
   });
+
+  $('#post_form_hide').click(function() {
+    $(this).parent().hide();
+    $('#post_form_show').show();
+    return false;
+  });
+  $('#post_form_show').click(function() {
+    $(this).hide();
+    $('#post_form').show();
+    return false;
+  });
 });
