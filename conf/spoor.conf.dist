@@ -38,8 +38,8 @@ display_limit = 50
 keys        = identica, twitter, delicious, pinboard
 # name => url
 delicious   = http://delicious.com/somerandomguy/
-identica    = http://identi.ca/somerandomguy/
-pinboard    = http://pinboard.com/somerandomguy
+identica    = http://identi.ca/somerandomguy
+pinboard    = http://pinboard.in/u:somerandomguy
 twitter     = http://twitter.com/somerandomguy
 # etc.
 
