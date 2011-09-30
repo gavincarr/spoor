@@ -31,8 +31,8 @@
 </p>
 % }
 <p class="post_meta">
-<a class="post_link" href="/post/<%= $post->id %>" title="link to post <%= $post->id %>">#</a>
 <span class="post_ts" data-epoch="<%= $tp->epoch %>" title="<%= $tp->strftime('%d %b %Y, %I:%M %p') %>"><%= Spoor::Util::tp2human_duration($tp, $now) %></span>
+<a class="post_link" href="/post/<%= $post->id %>" title="link to post <%= $post->id %>" style="display:none">#</a>
 </p>
 </div>
 % }

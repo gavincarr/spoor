@@ -145,6 +145,7 @@ $(function() {
     $('#post_chars').show();
   });
 
+  // Show/hide post_form
   $('#post_form_hide').click(function() {
     $(this).parent().hide();
     $('#post_form_show').show();
@@ -154,5 +155,13 @@ $(function() {
     $(this).hide();
     $('#post_form').show().find('textarea').focus();
     return false;
+  });
+
+  // Show/hide post_link on div.post hover
+  $('div#content').delegate('div.post', 'mouseenter', function() {
+    $(this).find('a.post_link').show();
+  });
+  $('div#content').delegate('div.post', 'mouseleave', function() {
+    $(this).find('a.post_link').hide();
   });
 });

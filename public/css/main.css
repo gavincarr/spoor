@@ -74,7 +74,7 @@ div.paused:hover {
   color: #999;
 }
 .post_link {
-  margin-right: 10px;
+  margin: 0 10px;
 }
 .post_controls {
   margin: 0;
