@@ -8,6 +8,9 @@ h1 {
   font-size: 1.7em;
   color: #666;
 }
+#avatar {
+  margin-right: 8px;
+}
 
 img {
   border: none;
@@ -67,8 +70,11 @@ div.paused:hover {
   font-size: 0.8em;
   float: left;
 }
-.post_meta a {
+.post_meta, .post_meta a {
   color: #999;
+}
+.post_link {
+  margin-right: 10px;
 }
 .post_controls {
   margin: 0;

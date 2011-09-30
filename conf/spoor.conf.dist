@@ -23,6 +23,10 @@ publish_delay = 120
 # Number of posts to display in html and feed interfaces
 display_limit = 50
 
+# Avatar - either a full url or a file in the public/images directory (optional)
+#avatar = /images/avatar.png
+
+
 
 # -------------------------------------------------------------------------
 # Tag configuration - three kinds of special tags need to be defined here:

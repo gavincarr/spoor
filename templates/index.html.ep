@@ -1,16 +1,14 @@
 % layout 'default';
 % my $user = session 'user';
-<div id="header">
-<h1><%= $title %></h1>
-</div>
+<h1><%== $config->get('avatar') ? '<img id="avatar" src="' . $config->get('avatar') . '">' : '' %><%= $title %></h1>
 % if ($user) {
-<form id="post_form" action="" method="post">
+<form id="post_form" action="" method="post" style="display:none">
 <textarea id="post_data" name="post" rows="3" cols="70"></textarea>
 <input id="post_submit" name="submit" type="submit" value="Post"></input>
 <span id="post_chars" class="post_chars">0</span>
 <a id="post_form_hide" class="post_form_icon" href="/"><img src="/images/post_form_hide.png" title="hide post form" alt="hide post form" height="16" width="16"></a>
 </form>
-<a id="post_form_show" class="post_form_icon" href="/" style="display:none"><img src="/images/post_form_show.png" title="show post form" alt="show post form" height="16" width="16"></a>
+<a id="post_form_show" class="post_form_icon" href="/"><img src="/images/post_form_show.png" title="show post form" alt="show post form" height="16" width="16"></a>
 % }
 % my $now = Time::Piece->localtime;
 % while (my $post = $rs->next) {
@@ -32,7 +30,10 @@
 <a class="post_delete" href="" title="delete post"><img class="icon" src="/images/post_delete.png" alt="delete post"></a>
 </p>
 % }
-<p class="post_meta"><span class="post_ts" data-epoch="<%= $tp->epoch %>" title="<%= $tp->strftime('%d %b %Y, %I:%M %p') %>"><%= Spoor::Util::tp2human_duration($tp, $now) %></span></p>
+<p class="post_meta">
+<a class="post_link" href="/post/<%= $post->id %>" title="link to post <%= $post->id %>">#</a>
+<span class="post_ts" data-epoch="<%= $tp->epoch %>" title="<%= $tp->strftime('%d %b %Y, %I:%M %p') %>"><%= Spoor::Util::tp2human_duration($tp, $now) %></span>
+</p>
 </div>
 % }
 <div id="publish_delay" style="display:none"><%= $publish_delay %></div>

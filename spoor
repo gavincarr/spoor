@@ -49,6 +49,7 @@ helper render_html => sub {
   $self->stash(js_list          => [ qw(post.js) ]);
   $self->stash(ts_cutoff_epoch  => time - $publish_delay);
   $self->stash(title            => $title);
+  $self->stash(config           => $config);
 
   $self->render('index');
 };
@@ -198,6 +199,7 @@ get '/post/:id' => sub {
   $self->stash(title    => $title);
   $self->stash(post     => $post);
   $self->stash(js_list  => undef);
+  $self->stash(config   => $config);
 } => 'display';
 
 # -------------------------------------------------------------------------

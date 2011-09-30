@@ -152,7 +152,7 @@ $(function() {
   });
   $('#post_form_show').click(function() {
     $(this).hide();
-    $('#post_form').show();
+    $('#post_form').show().find('textarea').focus();
     return false;
   });
 });

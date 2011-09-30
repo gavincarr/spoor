@@ -1,6 +1,6 @@
 % layout 'default';
 % my $tp = $post->ts2tp;
-<h1><%= $title %></h1>
+<h1><%== $config->get('avatar') ? '<img id="avatar" src="' . $config->get('avatar') . '">' : '' %><%= $title %></h1>
 <div id="post<%= $post->id %>" class="post">
 <a id="<%= $post->id %>"></a>
 <p class="post_text"><%== $post->post_html %></p>
