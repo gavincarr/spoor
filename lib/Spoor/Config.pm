@@ -1,15 +1,17 @@
 package Spoor::Config;
 
 use strict;
+use File::Spec;
 use Config::Tiny;
 use Carp;
 
 sub _init {
   my $self = shift;
 
-  croak "Config file '$self->{file}' not found" unless -f $self->{file};
+  my $config_file = File::Spec->catfile($ENV{SPOOR_HOME}, 'conf', 'spoor.conf');
+  die "Missing config file '$config_file'" unless -f $config_file;
 
-  my $config = $self->{config} = Config::Tiny->read( $self->{file} );
+  my $config = $self->{config} = Config::Tiny->read( $config_file );
   $self->{tag} = {};
   $self->{typemap} = {};
 

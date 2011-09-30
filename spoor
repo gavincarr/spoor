@@ -25,8 +25,7 @@ use Spoor::Util qw(get_schema ts2iso8601 ts2iso8601_offset);
 # Config
 #
 
-my $SPOOR_HOME = dirname __FILE__;
-my $config = Spoor::Config->new(file => "$SPOOR_HOME/conf/spoor.conf", log => app->log);
+my $config = Spoor::Config->new(log => app->log);
 my $spoor_url = $config->get('url')
   or die "Missing 'url' setting in spoor.conf\n";
 
