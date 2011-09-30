@@ -25,6 +25,8 @@ display_limit = 50
 
 # Avatar - either a full url or a file in the public/images directory (optional)
 #avatar = /images/avatar.png
+# You can also use a custom favicon if you wish
+#avatar_favicon = /images/avatar_favicon.png
 
 
 

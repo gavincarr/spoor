@@ -6,7 +6,7 @@
 <title><%= $title %></title>
 <meta name="description" content="Spoor, personal microblogging micro-app">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="icon" type="image/png" href="/images/footprints-16.png">
+<link rel="icon" type="image/png" href="<%= $config->get('avatar_favicon') || '/images/favicon.png' %>">
 <link rel="stylesheet" type="text/css" media="all" href="/css/normalize.min.css">
 <link rel="stylesheet" type="text/css" media="all" href="/css/main.css">
 <link rel="alternate" type="application/atom+xml" title="Post feed (atom)" href="/index.atom">
