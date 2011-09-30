@@ -246,9 +246,10 @@ get '/login' => sub {
     $self->redirect_to('index');
   }
   else {
-    $self->stash(title => 'Login unsuccessful');
-    $self->stash(js_list => undef);
-    $self->render(template => 'badlogin');
+    $self->stash(title      => 'Login unsuccessful');
+    $self->stash(js_list    => undef);
+    $self->stash(config     => $config);
+    $self->render(template  => 'badlogin');
   }
 } => 'login';
 
