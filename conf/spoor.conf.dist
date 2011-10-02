@@ -10,6 +10,9 @@ title = @somerandomguy's microblog
 # (used for generating secure signed cookies)
 secret = f097c174-12bb-4ae2-9d64-a108f7d94024
 
+# Secure flag - whether to restrict authentication actions to HTTPS contexts
+secure = 1
+
 # URL for this spoor instance
 url = https://spoor.example.com:3000
 

@@ -243,9 +243,10 @@ get '/login' => sub {
   my $self = shift;
 
   # Upgrade to https if http
-  $self->redirect_to($self->req->url->clone->scheme('https'))
-    unless $self->req->url->scheme eq 'https' ||
-           $self->req->headers->header('X-Forwarded-Protocol') eq 'https';
+  return $self->redirect_to($self->req->url->to_abs->clone->scheme('https'))
+    if $config->get('secure') &&
+       $self->req->url->to_abs->scheme ne 'https' &&
+       $self->req->headers->header('X-Forwarded-Protocol') ne 'https';
 
   # Check login credentials
   if ($self->login) {
@@ -388,7 +389,7 @@ del '/post/:id' => sub {
 # -------------------------------------------------------------------------
 
 # Bump up default session expiration time to 3h
-app->sessions->default_expiration(3 * 3600)->secure(1);
+app->sessions->default_expiration(3 * 3600)->secure($config->get('secure'));
 
 # Tweak base url when reverse proxy with https
 app->hook(before_dispatch => sub {
