@@ -229,7 +229,7 @@ helper 'login' => sub {
 
       $log->debug("Checking user '$user', pass '$pass' ...");
       if ($user eq $conf_username && $pass eq $conf_password) {
-        $log->info("User/pass found and good, setting session for $user");
+        $log->debug("User/pass found and good, setting session for $user");
         $self->session(user => $user);
         return 1;
       }
