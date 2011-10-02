@@ -5,9 +5,11 @@
 # - accept posts via an api (json messages via HTTP POSTs)
 # - simple interfaces for post listing and display (html and atom)
 #
+#!/usr/bin/perl
 
 use strict;
 use File::Basename;
+use Getopt::Long qw(:config no_ignore_case bundling);
 use Mojolicious::Lite;
 use Encode;
 use XML::Atom;
@@ -21,11 +23,27 @@ use lib 'lib';
 use Spoor::Config;
 use Spoor::Util qw(get_schema ts2iso8601 ts2iso8601_offset);
 
+sub usage {
+  warn @_ if @_;
+  die "usage: " . basename($0) . " [-v] [--config <config_file>\n";
+}
+
+my $verbose = 0;
+my ($help, $config_file);
+usage unless GetOptions(
+  'help|h|?'        => \$help,
+  'verbose|v+'      => \$verbose,
+  'config|c=s'      => \$config_file,
+);
+usage if $help;
+usage if @ARGV;
+
 # -------------------------------------------------------------------------
 # Config
 #
 
-my $config = Spoor::Config->new(log => app->log);
+my %config_file = $config_file ? ( config_file => $config_file ) : ();
+my $config = Spoor::Config->new(log => app->log, %config_file);
 my $spoor_url = $config->get('url')
   or die "Missing 'url' setting in spoor.conf\n";
 

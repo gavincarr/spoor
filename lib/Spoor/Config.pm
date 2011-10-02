@@ -8,10 +8,10 @@ use Carp;
 sub _init {
   my $self = shift;
 
-  my $config_file = File::Spec->catfile($ENV{SPOOR_HOME}, 'conf', 'spoor.conf');
-  die "Missing config file '$config_file'" unless -f $config_file;
+  $self->{config_file} ||= File::Spec->catfile($ENV{SPOOR_HOME}, 'conf', 'spoor.conf');
+  die "Missing config file '$self->{config_file}'" unless -f $self->{config_file};
 
-  my $config = $self->{config} = Config::Tiny->read( $config_file );
+  my $config = $self->{config} = Config::Tiny->read( $self->{config_file} );
   $self->{tag} = {};
   $self->{typemap} = {};
 
