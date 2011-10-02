@@ -10,10 +10,10 @@
 </p>
 % }
 </div><!-- header -->
-<div id="posts">
+<div id="main">
 <div id="post<%= $post->id %>" class="post">
 <a id="<%= $post->id %>"></a>
 <p class="post_text"><%== $post->post_html %></p>
 <p class="post_meta"><span class="post_ts" data-epoch="<%= $tp->epoch %>" title="<%= $tp->strftime('%d %b %Y, %I:%M %p') %>"><%= Spoor::Util::tp2human_duration($tp) %></span></p>
 </div><!-- post<%= $post->id %> -->
-</div><!-- posts -->
+</div><!-- main -->

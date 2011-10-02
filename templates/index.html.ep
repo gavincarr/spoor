@@ -10,7 +10,7 @@
 </p>
 % }
 </div><!-- header -->
-<div id="posts">
+<div id="main">
 % if ($user) {
 <form id="post_form" action="" method="post" style="display:none">
 <textarea id="post_data" name="post" rows="3" cols="70"></textarea>
@@ -47,5 +47,5 @@
 </div><!-- post<%= $post->id %> -->
 % }
 <div id="publish_delay" style="display:none"><%= $publish_delay %></div>
-</div><!-- posts -->
+</div><!-- main -->
 %# vim:ft=mason

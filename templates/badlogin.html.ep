@@ -1,4 +1,8 @@
 % layout 'default';
+<div id="header">
 <h1>Login failed!</h1>
+</div><!-- header -->
+<div id="main">
 <p>Username or password was incorrect.</p>
 <p><a href="/">Back to Home</a>&nbsp;|&nbsp;<a href="/login">Login again</a></p>
+</div><!-- main -->
