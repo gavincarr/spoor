@@ -12,3 +12,4 @@ public/images/avatar*
 conf/*.conf
 delta/applied/*
 var/*
+hypnotoad.pid
