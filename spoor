@@ -241,9 +241,18 @@ helper 'login' => sub {
 
 get '/login' => sub {
   my $self = shift;
+
+  # Upgrade to https if http
+  $self->redirect_to($self->req->url->clone->scheme('https'))
+    unless $self->req->url->schema eq 'https' ||
+           $self->req->headers->header('X-Forwarded-Protocol') eq 'https';
+
+  # Check login credentials
   if ($self->login) {
     $self->redirect_to('index');
   }
+
+  # Bad login
   else {
     $self->stash(title      => 'Login unsuccessful');
     $self->stash(js_list    => undef);
@@ -379,7 +388,7 @@ del '/post/:id' => sub {
 # -------------------------------------------------------------------------
 
 # Bump up default session expiration time to 3h
-app->sessions->default_expiration(3 * 3600);
+app->sessions->default_expiration(3 * 3600)->secure(1);
 
 # Tweak base url when reverse proxy with https
 app->hook(before_dispatch => sub {
