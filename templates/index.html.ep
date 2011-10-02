@@ -1,5 +1,6 @@
 % layout 'default';
 % my $user = session 'user';
+<div id="header">
 <h1><%== $config->get('avatar') ? '<img id="avatar" src="' . $config->get('avatar') . '">' : '' %><%= $title %></h1>
 % if (my $elsewhere = $config->elsewhere) {
 <p id="elsewhere">Syndicating to:
@@ -8,6 +9,8 @@
 %   }
 </p>
 % }
+</div><!-- header -->
+<div id="posts">
 % if ($user) {
 <form id="post_form" action="" method="post" style="display:none">
 <textarea id="post_data" name="post" rows="3" cols="70"></textarea>
@@ -41,7 +44,8 @@
 <span class="post_ts" data-epoch="<%= $tp->epoch %>" title="<%= $tp->strftime('%d %b %Y, %I:%M %p') %>"><%= Spoor::Util::tp2human_duration($tp, $now) %></span>
 <a class="post_link" href="/post/<%= $post->id %>" title="link to post <%= $post->id %>" style="display:none">#</a>
 </p>
-</div>
+</div><!-- post<%= $post->id %> -->
 % }
 <div id="publish_delay" style="display:none"><%= $publish_delay %></div>
+</div><!-- posts -->
 %# vim:ft=mason

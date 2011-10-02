@@ -47,6 +47,9 @@ a:hover {
   text-decoration: underline;
 }
 
+div#posts {
+  clear: both;
+}
 div.post {
   clear: both;
   padding: 10px 1px 21px;
