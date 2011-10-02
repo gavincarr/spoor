@@ -1,5 +1,5 @@
 
-upstream spoor {
+upstream backend {
     server 127.0.0.1:3007;
 }
 
@@ -12,7 +12,7 @@ server {
     ssl_certificate_key     /etc/pki/tls/private/spoor.key;
 
     location / {
-        proxy_pass          http://spoor;
+        proxy_pass          http://backend;
         proxy_redirect      off;
         proxy_set_header    Host             	    $host;
         proxy_set_header    X-Real-IP               $remote_addr;
@@ -26,7 +26,7 @@ server {
     server_name             _;
 
     location / {
-        proxy_pass	        http://spoor;
+        proxy_pass	        http://backend;
         proxy_redirect      off;
         proxy_set_header    Host             	    $host;
         proxy_set_header    X-Real-IP               $remote_addr;
