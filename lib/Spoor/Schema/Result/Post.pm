@@ -150,49 +150,54 @@ sub add_default_hashtags {
 
 # Extract hashtags from post_raw, and find_or_create tags and post_tags
 sub extract_and_create_hashtags {
-  my ($self, $config) = @_;
-  $config ||= Spoor::Config->new;
+  my ($self, %arg) = @_;
+  my $config = delete $arg{config} || Spoor::Config->new;
+  my $remove_all = delete $arg{remove_all};
   my $schema = $self->result_source->schema;
 
+  # Remove all existing post_tags (but not tags) if $remove_all set
+  $self->search_related('post_tags')->delete if $remove_all;
+
   my $post_processed = $self->post_raw;
-  my $reset_tag = 0;
+  my $reset_tags = 0;
   my @hashtags = ($self->post_raw =~ m/$RE{microsyntax}{hashtag}/og);
   my @groups   = ($self->post_raw =~ m/$RE{microsyntax}{grouptag}/og);
-  for my $hashtag (@hashtags, @groups) {
-    my $htag = substr($hashtag, 1);       # omit leading #
+  my @users    = ($self->post_raw =~ m/$RE{microsyntax}{user}/og);
+  for my $tag (@hashtags, @groups, @users) {
+    my $tag_type = substr($tag, 0, 1);
+    my $name = substr($tag, 1);       # omit leading #
 
     # find_or_create tag
     my $tag = $schema->resultset('Tag')->find_or_create({
-      type      => '#', 
-      tag       => $htag,
+      type      => $tag_type,
+      tag       => $name,
     })
-    or die "Creating tag '$hashtag' failed: #!";
+    or die "Creating tag '$tag' failed: $!";
 
     # find_or_create post_tag
     $schema->resultset('PostTag')->find_or_create({
       post_id   => $self->id,
       tag_id    => $tag->id,
     })
-    or die "Creating post_tag for post " . $self->id . ", tag '$hashtag' failed\n";
+    or die "Creating post_tag for post " . $self->id . ", tag '$tag' failed\n";
 
-    $reset_tag++ if $config->is_reset_tag($htag) || $config->is_default_tag($htag);
+    $reset_tags++ if $config->is_reset_tag($name) || $config->is_default_tag($name);
 
     # Delete any remove tags from $post_processed
-    $post_processed =~ s/\s*$hashtag\b//g if $config->is_remove_tag($htag);
+    $post_processed =~ s/\s*$tag\b//g if $config->is_remove_tag($name);
   }
 
   my $post_html = $self->post_raw;
-  $post_html =~ s!$RE{URI}{HTTP}{-keep}{-scheme => qr/https?/}!<a href="$1">$1</a>!g;
-  $post_html =~ s!$RE{microsyntax}{hashtag}{-keep}!<a href="/tag/$3">$1</a>!og;
-  $post_html =~ s!$RE{microsyntax}{grouptag}{-keep}!<a href="/tag/$3">$1</a>!og;
+  $post_html =~ s!$RE{URI}{HTTP}{-keep}{-scheme => qr/https?/}!<a class="url" href="$1">$1</a>!g;
+  $post_html =~ s!$RE{microsyntax}{hashtag}{-keep}!<a class="tag" href="/tag/$3">$1</a>!og;
+  $post_html =~ s!$RE{microsyntax}{grouptag}{-keep}!<a class="gtag" href="/gtag/$3">$1</a>!og;
+  $post_html =~ s!$RE{microsyntax}{user}{-keep}!<a class="user" href="/user/$3">$1</a>!og;
 
   # Set post_processed/post_html
   $self->update({ post_processed => $post_processed, post_html => $post_html });
 
   # If no reset tags are found, set defaults
-  if (! $reset_tag) {
-    $self->add_default_hashtags($config);
-  }
+  $self->add_default_hashtags($config) if ! $reset_tags;
 }
 
 # Override insert to auto-create tags and post_tags on row create
@@ -216,7 +221,7 @@ sub update {
     # Remove all existing post_tag records in case some have been removed
     $_->delete foreach $self->post_tags;
     # Extract and create new tags and post_tags
-    $self->extract_and_create_hashtags;
+    $self->extract_and_create_hashtags(remove_all => 1);
   }
 
   return $self;
