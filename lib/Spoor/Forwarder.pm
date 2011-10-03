@@ -91,6 +91,7 @@ sub _load_feed {
   my $self = shift;
 
   my $cg = $self->{config_global};
+  $cg->{url} =~ s!/+$!!;
   my $feed_uri = URI->new("$cg->{url}/tag/$self->{config}->{tag}.atom");
   $feed_uri->userinfo("$cg->{username}:$cg->{password}")
     if $cg->{username} && $cg->{password};
