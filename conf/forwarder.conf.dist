@@ -1,7 +1,5 @@
 # Spoor settings (cf. spoor.conf)
-url = https://spoor.example.com
-username = gavin
-password = sekrit
+url = http://spoor.example.com
 
 # Target settings
 [ identica ]
@@ -19,7 +17,7 @@ password = sekret2
 [ twitter ]
 tag = t
 process_post = s/ #bm\b.*$//
-# Twitter only supports OAuth now
+# Twitter only supports OAuth now :-/
 spoor_oauth_key = twitter_consumer_key
 spoor_oauth_secret = twitter_consumer_secret
 access_token = twitter_user_access_token

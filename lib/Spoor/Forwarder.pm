@@ -92,7 +92,8 @@ sub _load_feed {
 
   my $cg = $self->{config_global};
   my $feed_uri = URI->new("$cg->{url}/tag/$self->{config}->{tag}.atom");
-  $feed_uri->userinfo("$cg->{username}:$cg->{password}");
+  $feed_uri->userinfo("$cg->{username}:$cg->{password}")
+    if $cg->{username} && $cg->{password};
 
   $self->{feed} = XML::Atom::Feed->new( $feed_uri )
     or die "Loading feed '$feed_uri' failed.\n";
