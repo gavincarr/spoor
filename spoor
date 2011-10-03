@@ -14,12 +14,11 @@ use Mojolicious::Lite;
 use Encode;
 use XML::Atom;
 use XML::Atom::Feed;
+use Carp;
 
 plugin 'basic_auth';
 
-use FindBin qw($Bin);
-use lib "$Bin/lib";
-use lib 'lib';
+use lib "$ENV{SPOOR_HOME}/lib";
 use Spoor::Config;
 use Spoor::Util qw(get_schema ts2iso8601 ts2iso8601_offset);
 
@@ -112,8 +111,8 @@ helper render_atom => sub {
   $self->render(format => 'xml', text => $feed->as_xml);
 };
 
-helper render_rs => sub {
-  my ($self, $path, $rs) = @_;
+helper index_rs => sub {
+  my $self = shift;
 
   my @where = (delete_b => 0);
 
@@ -129,13 +128,18 @@ helper render_rs => sub {
     ]);
   }
 
-  $rs ||= $schema->resultset('Post')->search({
+  $schema->resultset('Post')->search({
     @where,
   }, {
     order_by    => 'timestamp desc',
     rows        => $config->get('display_limit') || 50,
   });
-  return '' unless $rs;
+};
+
+helper render_rs => sub {
+  my ($self, $rs, $path) = @_;
+  croak 'Missing required argument $rs' unless $rs;
+  croak 'Missing required argument $path' unless $path;
 
   my $format = $self->stash('format') || '';
   if ($format eq 'atom') {
@@ -150,12 +154,14 @@ helper render_rs => sub {
 
 get '/' => sub {
   my $self = shift;
-  $self->render_rs('/index');
+  my $rs = $self->index_rs;
+  $self->render_rs($rs, '/index');
 } => 'index';
 
 get '/index' => sub {
   my $self = shift;
-  $self->render_rs('/index');
+  my $rs = $self->index_rs;
+  $self->render_rs($rs, '/index');
 };
 
 get '/tag/:tag' => sub {
@@ -178,7 +184,25 @@ get '/tag/:tag' => sub {
   });
   return '' unless $rs;
 
-  $self->render_rs("/tag/$tag", $rs);
+  $self->render_rs($rs, "/tag/$tag");
+};
+
+get '/gtag/:tag' => sub {
+  my $self = shift;
+  my $tag = $self->param('tag');
+
+  my $rs = $schema->resultset('Post')->search({
+    'tag.type'  => '!',
+    'tag.tag'   => $tag,
+    delete_b    => 0,
+  }, {
+    order_by    => 'timestamp desc',
+    join        => { post_tags => 'tag' },
+    rows        => $config->get('display_limit') || 100,
+  });
+  return '' unless $rs;
+
+  $self->render_rs($rs, "/gtag/$tag");
 };
 
 # -------------------------------------------------------------------------
