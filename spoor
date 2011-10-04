@@ -111,31 +111,6 @@ helper render_atom => sub {
   $self->render(format => 'xml', text => $feed->as_xml);
 };
 
-helper index_rs => sub {
-  my $self = shift;
-
-  my @where = (delete_b => 0);
-
-  # If not logged in, omit posts tagged private
-  if (! $self->session('user')) {
-    # TODO: figure out how to do this with bind values
-    my $private_tags_list = sprintf q('%s'), join(q(', '), $config->private_tags);
-    app->log->debug("private_tags_list: $private_tags_list");
-    @where = ( -and => [
-      delete_b => 0,
-      \["not exists (select 1 from post_tag pt join tag t on (t.id = pt.tag_id)" .
-        "where pt.post_id = me.id and t.tag in ( $private_tags_list ))"],
-    ]);
-  }
-
-  $schema->resultset('Post')->search({
-    @where,
-  }, {
-    order_by    => 'timestamp desc',
-    rows        => $config->get('display_limit') || 50,
-  });
-};
-
 helper render_rs => sub {
   my ($self, $rs, $path) = @_;
   croak 'Missing required argument $rs' unless $rs;
@@ -154,13 +129,15 @@ helper render_rs => sub {
 
 get '/' => sub {
   my $self = shift;
-  my $rs = $self->index_rs;
+  my $rs = $schema->resultset('Post')->search_for_index($config, app->log, $self->session('user'))
+    or return;
   $self->render_rs($rs, '/index');
 } => 'index';
 
 get '/index' => sub {
   my $self = shift;
-  my $rs = $self->index_rs;
+  my $rs = $schema->resultset('Post')->search_for_index($config, app->log, $self->session('user'))
+    or return;
   $self->render_rs($rs, '/index');
 };
 
@@ -173,17 +150,8 @@ get '/tag/:tag' => sub {
     return $self->redirect_to('index');
   }
 
-  my $rs = $schema->resultset('Post')->search({
-    'tag.type'  => '#',
-    'tag.tag'   => $tag,
-    delete_b    => 0,
-  }, {
-    order_by    => 'timestamp desc',
-    join        => { post_tags => 'tag' },
-    rows        => $config->get('display_limit') || 100,
-  });
-  return '' unless $rs;
-
+  my $rs = $schema->resultset('Post')->search_by_tag($tag, '#', $config)
+    or return;
   $self->render_rs($rs, "/tag/$tag");
 };
 
@@ -191,18 +159,18 @@ get '/gtag/:tag' => sub {
   my $self = shift;
   my $tag = $self->param('tag');
 
-  my $rs = $schema->resultset('Post')->search({
-    'tag.type'  => '!',
-    'tag.tag'   => $tag,
-    delete_b    => 0,
-  }, {
-    order_by    => 'timestamp desc',
-    join        => { post_tags => 'tag' },
-    rows        => $config->get('display_limit') || 100,
-  });
-  return '' unless $rs;
-
+  my $rs = $schema->resultset('Post')->search_by_tag($tag, '!', $config)
+    or return;
   $self->render_rs($rs, "/gtag/$tag");
+};
+
+get '/user/:user' => sub {
+  my $self = shift;
+  my $user = $self->param('user');
+
+  my $rs = $schema->resultset('Post')->search_by_tag($user, '@', $config)
+    or return;
+  $self->render_rs($rs, "/user/$user");
 };
 
 # -------------------------------------------------------------------------
