@@ -33,9 +33,9 @@ display_limit = 50
 
 # Colours - set html colours for links, users, hashtags, grouptags, etc.
 # Don't use hash characters in color codes though - they'll act as comments
-#color_url = e33
-color_hashtag = 707
-color_grouptag = e90
+#color_url = 707
+color_hashtag = e33
+color_grouptag = e70
 color_user = 390
 
 
