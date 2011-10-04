@@ -31,13 +31,20 @@ display_limit = 50
 # You can also use a custom favicon if you wish
 #avatar_favicon = /images/avatar_favicon.png
 
+# Colours - set html colours for links, users, hashtags, grouptags, etc.
+# Don't use hash characters in color codes though - they'll act as comments
+#color_url = e33
+color_hashtag = 707
+color_grouptag = e90
+color_user = 390
+
 
 
 # -------------------------------------------------------------------------
 # URLs for your accounts at the various services you're forwarding to (optional)
 
 [ elsewhere ]
-# keys is used to specify the ordering you wish the remaining entries to be listed
+# keys specifies the ordering you wish the remaining entries to be listed
 keys        = identica, twitter, delicious, pinboard
 # name => url
 delicious   = http://delicious.com/somerandomguy/
