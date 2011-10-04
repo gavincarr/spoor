@@ -5,7 +5,6 @@
 # - accept posts via an api (json messages via HTTP POSTs)
 # - simple interfaces for post listing and display (html and atom)
 #
-#!/usr/bin/perl
 
 use strict;
 use File::Basename;
