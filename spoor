@@ -405,7 +405,7 @@ app->sessions->default_expiration(3 * 3600)->secure($config->get('secure'));
 app->hook(before_dispatch => sub {
   my $self = shift;
   $self->req->url->base->scheme('https')
-    if $self->req->headers->header('X-Forwarded-Protocol') eq 'https';
+    if $self->req->headers->header('X-Forwarded-Protocol')||'' eq 'https';
 });
 
 app->start;
