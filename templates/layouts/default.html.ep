@@ -10,6 +10,22 @@
 <link rel="stylesheet" type="text/css" media="all" href="/css/normalize.min.css">
 <link rel="stylesheet" type="text/css" media="all" href="/css/main.css">
 <link rel="alternate" type="application/atom+xml" title="Post feed (atom)" href="/index.atom">
+% if ($config->get('color_url') || $config->get('color_hashtag') || $config->get('color_grouptag') || $config->get('color_user')) {
+<style type="text/css">
+% if ($config->get('color_url')) {
+a.url, a.url:visited { color: #<%= $config->get('color_url') %>; }
+% }
+% if ($config->get('color_hashtag')) {
+a.tag, a.tag:visited { color: #<%= $config->get('color_hashtag') %>; }
+% }
+% if ($config->get('color_grouptag')) {
+a.gtag, a.gtag:visited { color: #<%= $config->get('color_grouptag') %>; }
+% }
+% if ($config->get('color_user')) {
+a.user, a.user:visited { color: #<%= $config->get('color_user') %>; }
+% }
+</style>
+% }
 </head>
 <body>
 <div id="content">
