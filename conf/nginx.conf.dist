@@ -6,10 +6,18 @@ upstream backend {
 server {
     listen                  443;
     server_name             _;
+    root                    /path/to/spoor/public;
    
     ssl                     on;
     ssl_certificate         /etc/pki/tls/certs/spoor.cert;
     ssl_certificate_key     /etc/pki/tls/private/spoor.key;
+
+    gzip                        on;
+    gzip_types                  text/plain text/css application/x-javascript;
+
+    location ~* \.(js|css|jpg|jpeg|gif|png|ico)$ {
+        expires 1w;
+    }
 
     location / {
         proxy_pass          http://backend;
@@ -24,6 +32,14 @@ server {
 server {
     listen                  80;
     server_name             _;
+    root                    /path/to/spoor/public;
+
+    gzip                    on;
+    gzip_types              text/plain text/css application/x-javascript;
+
+    location ~* \.(js|css|jpg|jpeg|gif|png|ico)$ {
+        expires 1w;
+    }
 
     location / {
         proxy_pass	        http://backend;
