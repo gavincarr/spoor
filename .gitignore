@@ -10,6 +10,6 @@ Notes
 TODO
 public/images/avatar*
 conf/*.conf
-delta/applied/*
-var/*
+var/*db
+var/*dat
 hypnotoad.pid
