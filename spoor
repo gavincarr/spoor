@@ -23,7 +23,7 @@ use Spoor::Util qw(get_schema ts2iso8601 ts2iso8601_offset);
 
 sub usage {
   warn @_ if @_;
-  die "usage: " . basename($0) . " [-v] [--config <config_file>\n";
+  die "usage: " . basename($0) . " [-v] [--config <config_file>]\n";
 }
 
 my $verbose = 0;
@@ -34,7 +34,6 @@ usage unless GetOptions(
   'config|c=s'      => \$config_file,
 );
 usage if $help;
-usage if @ARGV;
 
 # -------------------------------------------------------------------------
 # Config
