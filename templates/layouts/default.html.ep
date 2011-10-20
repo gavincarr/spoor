@@ -39,8 +39,8 @@ a.user, a.user:visited { color: #<%= $config->get('color_user') %>; }
 % } else {
 <a id="login" href="<%= $config->get('url') %>/login">Login</a>
 % }
-|
 % if (@$elsewhere) {
+|
 <div id="elsewhere">Syndicating to:
 %   for my $entry (@$elsewhere) {
 <a href="<%= $entry->{url} %>" title="<%= $entry->{name} . ': ' .  $entry->{url} %>"><img src="/images/<%= $entry->{name} %>.png" alt="*"></a>
