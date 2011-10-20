@@ -37,7 +37,7 @@ sub new {
   # Instantiate and return forwarder class
   my $f = eval "require Spoor::Forwarder::$forwarder; Spoor::Forwarder::${forwarder}->new";
   die $@ if $@;
-  $f->init( target => $target, config => $config_section );
+  $f->init( %arg, config => $config_section );
   return $f;
 }
 
