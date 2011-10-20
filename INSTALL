@@ -1,0 +1,82 @@
+Spoor Installation
+==================
+
+These instructions are developed on Linux, but should work on any Unix-like
+environment, including Mac OSX, with minor modifications.
+
+
+1. Unpack the spoor tarball somewhere e.g. your home directory.
+   Or if you like the bleeding edge, clone from github:
+   
+      git clone https://github.com/gavincarr/spoor
+
+
+2. Make sure the following perl modules are installed. Note that Mojolicious
+   >= 1.99 requires perl >= 5.10.1, so if you're running an older perl (debian,
+   CentOS 5, etc.), you may want to install an older Mojolicious (e.g. 1.90).
+
+      Mojolicious
+      Mojolicious::Plugin::BasicAuth
+      Exporter::Lite
+      Config::Tiny
+      XML::Atom
+      XML::Atom::Feed
+      LWP
+      LWP::Protocol::https
+      YAML
+      DBD::SQLite
+      Lingua::EN::Inflect
+      Regexp::Common::microsyntax
+      Net::Twitter          (if you want to forward to twitter/identi.ca)
+      Net::Delicious        (if you want to forward to delicious/pinboard)
+
+
+[ If you don't have root access, use cpanminus (http://cpanmin.us/), which
+  will install them to ~/perl5, and then add PERL5LIB=/home/user/perl5 to your
+  environment. ]
+
+
+
+3. Setup an empty database and a local spoor.conf: 
+
+      cp var/spoor.db.dist var/spoor.db
+      cp conf/spoor.conf.dist conf/spoor.conf
+      $EDITOR conf/spoor.conf
+
+
+4. Startup the spoor web service:
+
+      ./spoor daemon --mode production --listen http://*:3007
+
+You should now be able connect to http://localhost:3007/, login, and create
+posts.
+
+
+
+5. If you want to forward to other services (twitter, delicious etc.), then
+configure forwarder.conf appropriately:
+
+      cp conf/forwarder.conf.dist conf/forwarder.conf
+      $EDITOR conf/forwarder.conf
+
+You can test forwarding by hand:
+
+      # Dry run
+      bin/forwarder -v --noop --target identica
+      # Forward 1st post only
+      bin/forwarder -v --count 1 --target identica
+
+Once everything is working, you can add the desired entries from
+conf/forwarder.crontab.dist to your personal crontab:
+
+      cat conf/forwarder.crontab.dist
+      crontab -e
+
+
+
+6. If you're running spoor on a laptop or behind a firewall you're all done.
+If you want to run on the internet, you should run behind an SSL-capable proxy
+of some kind. I use nginx - see conf/nginx.conf.dist for a starting point for a
+config.
+
+
