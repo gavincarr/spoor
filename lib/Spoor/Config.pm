@@ -6,10 +6,11 @@ use File::Spec;
 use Config::Tiny;
 use Carp;
 
+my $SPOOR_HOME = dirname dirname dirname $INC{'Spoor/Config.pm'};
 sub _init {
   my $self = shift;
 
-  $self->{config_file} ||= File::Spec->catfile(dirname dirname dirname($INC{'Spoor/Config.pm'}), 'conf', 'spoor.conf');
+  $self->{config_file} ||= File::Spec->catfile($SPOOR_HOME, 'conf', 'spoor.conf');
   die "Missing config file '$self->{config_file}'" unless -f $self->{config_file};
 
   my $config = $self->{config} = Config::Tiny->read( $self->{config_file} );
