@@ -35,9 +35,9 @@ sub new {
     or die "Missing required 'forwarder' attribute in config [ $target ] section\n";
 
   # Instantiate and return forwarder class
-  my $f = eval "require Spoor::Forwarder::$forwarder; Spoor::Forwarder::${forwarder}->new( section => '$target' )";
+  my $f = eval "require Spoor::Forwarder::$forwarder; Spoor::Forwarder::${forwarder}->new";
   die $@ if $@;
-  $f->config( $config_section );
+  $f->init( target => $target, config => $config_section );
   return $f;
 }
 

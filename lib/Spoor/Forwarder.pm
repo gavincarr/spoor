@@ -16,24 +16,25 @@ use Carp;
 use FindBin qw($Bin);
 use Spoor::Config;
 
-sub new {
-  my $class = shift;
-  my $self = bless { @_ }, $class;
-}
+sub init {
+  my ($self, %arg) = @_;
 
-sub config {
-  my ($self, $config) = @_;
+  $self->{$_} = $arg{$_} foreach keys %arg;
 
-  $self->{config} = $config
+  $self->{target}
+    or croak "Missing required 'target' argument";
+  $self->{config}
     or croak "Missing required 'config' argument";
 
   $self->{state_dir} = "$Bin/../var";
-  $self->{state_file} = "$self->{state_dir}/$self->{section}.dat";
+  $self->{state_file} = "$self->{state_dir}/$self->{target}.dat";
 
   $self->{spoor_config} = Spoor::Config->new
     or die "Cannot load spoor config\n";
+}
 
-  return $self;
+sub new {
+  bless {}, shift;
 }
 
 sub _load_state {
