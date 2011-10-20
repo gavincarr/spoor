@@ -1,3 +1,5 @@
+% my $elsewhere = $config->elsewhere;
+% my $user = session 'user';
 <!doctype html>
 <html>
 <head>
@@ -29,12 +31,27 @@ a.user, a.user:visited { color: #<%= $config->get('color_user') %>; }
 </head>
 <body>
 <div id="content">
+<div id="header">
+<h1><%== $config->get('avatar') ? '<img id="avatar" src="' . $config->get('avatar') . '">' : '' %><%= $title %></h1>
+<div id="topright">
+% if ($user) {
+<a id="login" href="<%= $config->get('url') %>/logout">Logout</a>
+% } else {
+<a id="login" href="<%= $config->get('url') %>/login">Login</a>
+% }
+|
+% if (@$elsewhere) {
+<div id="elsewhere">Syndicating to:
+%   for my $entry (@$elsewhere) {
+<a href="<%= $entry->{url} %>" title="<%= $entry->{name} . ': ' .  $entry->{url} %>"><img src="/images/<%= $entry->{name} %>.png" alt="*"></a>
+%   }
+</div><!-- elsewhere -->
+% }
+</div><!-- topright -->
+</div><!-- header -->
 <%= content %>
 <div id="footer">
 <a href="http://github.com/gavincarr/spoor/">Powered by Spoor</a>.
-%# if (my $user = session 'user') {
-%# Authenticated: <%= $user %>.
-%# }
 </div><!-- footer -->
 </div><!-- content -->
 %# JavaScript at the bottom for fast page loading
@@ -48,3 +65,4 @@ a.user, a.user:visited { color: #<%= $config->get('color_user') %>; }
 % }
 </body>
 </html>
+%# vim:ft=mason
