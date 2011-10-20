@@ -1,8 +1,9 @@
 % layout 'default';
 % my $user = session 'user';
+% my $elsewhere = $config->elsewhere;
 <div id="header">
 <h1><%== $config->get('avatar') ? '<img id="avatar" src="' . $config->get('avatar') . '">' : '' %><%= $title %></h1>
-% if (my $elsewhere = $config->elsewhere) {
+% if (@$elsewhere) {
 <p id="elsewhere">Syndicating to:
 %   for my $entry (@$elsewhere) {
 <a href="<%= $entry->{url} %>" title="<%= $entry->{name} . ': ' .  $entry->{url} %>"><img src="/images/<%= $entry->{name} %>.png" alt="*"></a>

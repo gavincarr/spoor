@@ -1,8 +1,9 @@
 % layout 'default';
 % my $tp = $post->ts2tp;
+% my $elsewhere = $config->elsewhere;
 <div id="header">
 <h1><%== $config->get('avatar') ? '<img id="avatar" src="' . $config->get('avatar') . '">' : '' %><%= $title %></h1>
-% if (my $elsewhere = $config->elsewhere) {
+% if (@$elsewhere) {
 <p id="elsewhere">Syndicating to:
 %   for my $entry (@$elsewhere) {
 <a href="<%= $entry->{url} %>" title="<%= $entry->{name} . ': ' .  $entry->{url} %>"><img src="/images/<%= $entry->{name} %>.png" alt="*"></a>
@@ -17,3 +18,4 @@
 <p class="post_meta"><span class="post_ts" data-epoch="<%= $tp->epoch %>" title="<%= $tp->strftime('%d %b %Y, %I:%M %p') %>"><%= Spoor::Util::tp2human_duration($tp) %></span></p>
 </div><!-- post<%= $post->id %> -->
 </div><!-- main -->
+%# vim:ft=mason
