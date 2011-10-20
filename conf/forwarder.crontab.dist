@@ -1,4 +1,6 @@
 SPOOR_HOME=/path/to/spoor
+# Uncomment the following if you want to allow connections to self-signed ssl services
+#PERL_LWP_SSL_VERIFY_HOSTNAME=0
 
 # Run spoor forwarders every minute (uncomment to activate)
 #* * * * * $SPOOR_HOME/bin/forwarder --target identica
