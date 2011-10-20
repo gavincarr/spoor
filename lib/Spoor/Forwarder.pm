@@ -1,70 +1,39 @@
+#
 # Spoor Forwarder base class, for building forwarders to remote endpoints
 # 
-# This is an old-school OO class so we don't have to require stuff like Moose
+# Old-school OO class so we don't have to require stuff like Moose
 #
 
 package Spoor::Forwarder;
 
 use strict;
-use File::Basename;
-use Getopt::Long qw(:config no_ignore_case bundling);
-use FindBin qw($Bin);
-use Config::Tiny;
 use XML::Atom::Feed;
 use URI;
 use Time::Piece;
 use YAML;
+use Carp
 
-sub _init {
-  my $self = shift;
+use FindBin qw($Bin);
+use Spoor::Config;
 
-  $self->{me} = basename($0);
-  $self->{short} = basename($0);
-  $self->{short} =~ s/^forwarder_?//;
-  $self->{config_file} = "$Bin/../conf/forwarder.conf";
+sub new {
+  my $class = shift;
+  my $self = bless { @_ }, $class;
+}
+
+sub config {
+  my ($self, $config) = @_;
+
+  $self->{config} = $config
+    or croak "Missing required 'config' argument";
+
   $self->{state_dir} = "$Bin/../var";
-  $self->{state_file} = "$self->{state_dir}/$self->{me}.dat";
+  $self->{state_file} = "$self->{state_dir}/$self->{section}.dat";
+
+  $self->{spoor_config} = Spoor::Config->new
+    or die "Cannot load spoor config\n";
 
   return $self;
-}
-
-sub usage { 
-  my $self = shift;
-  die "usage: $self->{me} [-v] [-c <count>] [--noop]\n";
-}
-
-# Process command-line options
-sub _process_options {
-  my $self = shift;
-  my $store_option_sub = sub { my ($k, $v) = @_; $self->{$k} = $v };
-
-  my $help;
-  $self->{verbose} = 0;
-  usage unless GetOptions(
-    'help|h|?'    => \$help,
-    'count|c=i'   => $store_option_sub,
-    'noop|n'      => $store_option_sub,
-    'verbose|v+'  => $store_option_sub,
-  );
-  usage if $help;
-  $self->{verbose} ||= 1 if $self->{noop};
-}
-
-# Load config from $self->{short} section in $self->{config_file}
-sub _load_config {
-  my $self = shift;
-
-  -f $self->{config_file} 
-    or  die "Cannot find forwarder config file '$self->{config_file}'\n";
-  -r $self->{config_file} 
-    or  die "Cannot read forwarder config file '$self->{config_file}'\n";
-
-  my $config = Config::Tiny->read( $self->{config_file} );
-  exists $config->{$self->{short}}
-    or die "Cannot find '$self->{short}' section in forwarder config file\n";
-  $self->{config_obj} = $config;
-  $self->{config_global} = $config->{_};
-  $self->{config} = $config->{$self->{short}};
 }
 
 sub _load_state {
@@ -90,11 +59,13 @@ sub _load_state {
 sub _load_feed {
   my $self = shift;
 
-  my $cg = $self->{config_global};
-  $cg->{url} =~ s!/+$!!;
-  my $feed_uri = URI->new("$cg->{url}/tag/$self->{config}->{tag}.atom");
-  $feed_uri->userinfo("$cg->{username}:$cg->{password}")
-    if $cg->{username} && $cg->{password};
+  my $spoor_config = $self->{spoor_config};
+  my $url = $self->{spoor_config}->get('url')
+    or die "Spoor config 'url' not found - cannot generate feed url\n";
+  $url =~ s! /+ $ !!x;
+  my $feed_uri = URI->new("$url/tag/$self->{config}->{tag}.atom");
+  $feed_uri->userinfo($spoor_config->get('username') . ':' . $spoor_config->get('password'))
+    if $spoor_config->get('username') && $spoor_config->get('password');
 
   $self->{feed} = XML::Atom::Feed->new( $feed_uri )
     or die "Loading feed '$feed_uri' failed.\n";
@@ -134,7 +105,8 @@ sub _process_feed {
     last if ++$i >= $self->{count};
   }
 
-  $self->{state}->write( $self->{state_file} ) if $self->{state_changed};
+  $self->{state}->write( $self->{state_file} )
+    if $self->{state_changed} && ! $self->{noop};
 }
 
 # Process entry, returning true on success (forwarded or skipped)
@@ -162,16 +134,8 @@ sub process_post {
   return $title;
 }
 
-sub new {
-  my $self = bless {}, shift;
-  $self->_init;
-}
-
 sub run {
   my $self = shift;
-  $self = $self->new if ! ref $self;
-  $self->_process_options;
-  $self->_load_config;
   $self->_load_state;
   $self->_load_feed;
   $self->_process_feed;

@@ -11,6 +11,7 @@ sub connect {
   my %nt_config = (
     traits        => [ 'API::REST' ],
     identica      => 1,
+    $self->{config}->{endpoint} ? ( apiurl => $self->{config}->{endpoint} ) : (),
     %arg
   );
 

@@ -1,20 +1,32 @@
 #!/usr/bin/perl
 #
-# Generic spoor forwarder. Invoked via a symlink e.g. forwarder_<target>,
-# which then just loads and runs Spoor::Forwarder::<Target>.
+# Spoor forwarder.
 #
 
 use strict;
 use File::Basename;
+use Getopt::Long qw(:config no_ignore_case bundling);
+
 use FindBin qw($Bin);
 use lib "$Bin/../lib";
 
-my $target = basename($0);
-$target =~ s/^forwarder_?//;
-die "Must call forwarder via a forwarder_<target> symlink\n" unless $target;
+sub usage {
+  warn @_ if @_;
+  die "usage: " . basename($0) . " [-v] --target <config_section>\n";
+}
 
-my $class = "Spoor::Forwarder::\u$target";
-eval "require $class" or die "Cannot load class '$class': $@\n";
+my $verbose = 0;
+my ($help, $noop, $count, $target);
+usage unless GetOptions(
+  'help|h|?'        => \$help,
+  'verbose|v+'      => \$verbose,
+  'noop|n'          => \$verbose,
+  'count|c=i'       => \$count,
+  'target|t=s'      => \$target,
+);
+usage if $help;
+usage if @ARGV;
+usage "Missing required --target argument\n" unless $target;
 
-$class->run;
+Spoor::ForwarderFactory->new(target => $target, noop => $noop, verbose => $verbose, count => $count)->run;
 
