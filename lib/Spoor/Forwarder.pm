@@ -11,7 +11,7 @@ use XML::Atom::Feed;
 use URI;
 use Time::Piece;
 use YAML;
-use Carp
+use Carp;
 
 use FindBin qw($Bin);
 use Spoor::Config;
