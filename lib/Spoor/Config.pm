@@ -1,7 +1,7 @@
 package Spoor::Config;
 
 use strict;
-use FindBin qw($Bin);
+use File::Basename;
 use File::Spec;
 use Config::Tiny;
 use Carp;
@@ -9,7 +9,7 @@ use Carp;
 sub _init {
   my $self = shift;
 
-  $self->{config_file} ||= File::Spec->catfile($ENV{SPOOR_HOME} || "$Bin/..", 'conf', 'spoor.conf');
+  $self->{config_file} ||= File::Spec->catfile(dirname dirname dirname($INC{'Spoor/Config.pm'}), 'conf', 'spoor.conf');
   die "Missing config file '$self->{config_file}'" unless -f $self->{config_file};
 
   my $config = $self->{config} = Config::Tiny->read( $self->{config_file} );

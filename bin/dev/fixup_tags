@@ -5,7 +5,8 @@
 #
 
 use strict;
-use lib "$ENV{SPOOR_HOME}/lib";
+use FindBin qw($Bin);
+use lib "$Bin/../../lib";
 use Spoor::Config;
 use Spoor::Util qw(get_schema);
 

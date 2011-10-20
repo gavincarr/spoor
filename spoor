@@ -17,7 +17,9 @@ use Carp;
 
 plugin 'basic_auth';
 
-use lib "$ENV{SPOOR_HOME}/lib";
+use FindBin qw($Bin);
+use lib "$Bin/lib";
+use lib 'lib';
 use Spoor::Config;
 use Spoor::Util qw(get_schema ts2iso8601 ts2iso8601_offset);
 
