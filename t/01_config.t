@@ -16,10 +16,10 @@ for (glob "$Bin/t01/*yml") {
   $expected{$name} = LoadFile($_);
 }
 
-ok($c = Spoor::Config->new(file => "$Bin/t01/spoor.conf"), 'construction ok: ' . $c);
+ok($c = Spoor::Config->new(config_file => "$Bin/t01/spoor.conf"), 'construction ok: ' . $c);
 is_deeply($c->elsewhere, $expected{elsewhere}, 'elsewhere data matches');
 
-ok($c = Spoor::Config->new(file => "$Bin/t01/spoor2.conf"), 'construction2 ok: ' . $c);
+ok($c = Spoor::Config->new(config_file => "$Bin/t01/spoor2.conf"), 'construction2 ok: ' . $c);
 is_deeply($c->elsewhere, $expected{elsewhere2}, 'elsewhere2 data matches');
 
 done_testing;
