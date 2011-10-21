@@ -27,7 +27,7 @@ sub init {
     or croak "Missing required 'config' argument";
 
   $self->{state_dir} = "$Bin/../var";
-  $self->{state_file} = "$self->{state_dir}/$self->{target}.dat";
+  $self->{state_file} = "$self->{state_dir}/forwarder_$self->{target}.dat";
 
   $self->{spoor_config} = Spoor::Config->new
     or die "Cannot load spoor config\n";
