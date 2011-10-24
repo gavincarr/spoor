@@ -255,8 +255,8 @@ get '/login' => sub {
   # Upgrade to https if http
   return $self->redirect_to($self->req->url->to_abs->clone->scheme('https'))
     if $config->get('secure') &&
-       $self->req->url->to_abs->scheme ne 'https' &&
-       $self->req->headers->header('X-Forwarded-Protocol') ne 'https';
+      ($self->req->headers->header('X-Forwarded-Protocol') eq 'http' ||
+       $self->req->url->to_abs->scheme ne 'https');
 
   # Check login credentials
   if ($self->login) {
