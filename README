@@ -19,6 +19,7 @@ services (delicious and pinboard) if I add a #bm hashtag. Posts tagged
 and #t tags if I want to limit a post to identi.ca or twitter,
 respectively.
 
+
 Status
 ------
 
@@ -31,6 +32,7 @@ Services currently forwarded:
 TODO:
 - facebook
 - google+ (once they have an api)
+- diaspora?
 - others?
 
 
