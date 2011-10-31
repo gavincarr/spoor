@@ -14,7 +14,7 @@ $(function() {
       text_elt.data('html', text_elt.html());
       text_elt.data('text', data.post);
       text_elt.html('<textarea rows="3" cols="70">' + data.post + '</textarea>\n' +
-                    '<input id="save" class="post_save" type="submit" value="Save"></input>\n' +
+                    '<input class="post_save" type="submit" value="Save"></input>\n' +
                     '<input class="post_save" type="submit" value="Cancel"></input>\n' +
                     '<span class="post_chars">' + data.post.length + '</span>'
                    );
