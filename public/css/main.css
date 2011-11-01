@@ -77,10 +77,6 @@ div.paused:hover {
 #post_form {
   margin-bottom: 10px;
 }
-#post_submit, .post_save {
-  position: relative;
-  top: 0px;
-}
 .post_text {
   margin: 0px;
   padding-bottom: 4px;
@@ -101,17 +97,16 @@ div.paused:hover {
   margin: 0;
   float: right;
 }
+.post_buttons {
+  display: inline;
+  position: relative;
+}
 .post_chars {
   color: #ccc;
   font-size: 16px;
   font-weight: bold;
-  position: relative;
+  position: absolute;
   top: 45px;
-  left: -117px;
-}
-#post_chars {
-  left: -50px;
-  display: none;
 }
 .post_form_icon {
   float: right;

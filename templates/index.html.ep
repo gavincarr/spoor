@@ -4,10 +4,13 @@
 % if ($user) {
 <form id="post_form" action="" method="post" style="display:none">
 <textarea id="post_data" name="post" rows="3" cols="70"></textarea>
-<input id="post_submit" name="submit" type="submit" value="Post"></input>
+<div class="post_buttons">
 <span id="post_chars" class="post_chars">0</span>
+<input id="post_submit" type="submit" value="Post">
+<input class="post_cancel" type="submit" value="Cancel">
+</div><!-- post_buttons -->
+<a id="post_form_hide" class="post_cancel post_form_icon" href="/"><img src="/images/post_form_hide.png" title="hide post form" alt="hide post form" height="16" width="16"></a>
 </form>
-<a id="post_form_hide" class="post_form_icon" href="/"><img src="/images/post_form_hide.png" title="hide post form" alt="hide post form" height="16" width="16"></a>
 <a id="post_form_show" class="post_form_icon" href="/"><img src="/images/post_form_show.png" title="show post form" alt="show post form" height="16" width="16"></a>
 % }
 % my $now = Time::Piece->localtime;

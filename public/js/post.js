@@ -14,9 +14,11 @@ $(function() {
       text_elt.data('html', text_elt.html());
       text_elt.data('text', data.post);
       text_elt.html('<textarea rows="3" cols="70">' + data.post + '</textarea>\n' +
-                    '<input class="post_save" type="submit" value="Save"></input>\n' +
-                    '<input class="post_save" type="submit" value="Cancel"></input>\n' +
-                    '<span class="post_chars">' + data.post.length + '</span>'
+                    '<div class="post_buttons">\n' +
+                    '<span class="post_chars">' + data.post.length + '</span>\n' +
+                    '<input class="post_save" type="submit" value="Save">\n' +
+                    '<input class="post_save" type="submit" value="Cancel">\n' +
+                    '</div><!-- post_buttons -->\n'
                    );
       $('textarea', div).focus();
     });
@@ -25,13 +27,13 @@ $(function() {
 
   // Update post text on save (if changed)
   $('div#content').delegate('.post_save', 'click', function() {
-    var div = $(this).parents('div:first');
+    var div = $(this).parents('div:first').parents('div:first');
     var text_elt = $('.post_text', div);
     var save_text = $('textarea', text_elt).val();
     var id = div.attr('id').replace(/^post/,'');
     // Update only if a save and text has changed
-    if ($(this).attr('id') == 'save' && save_text.length > 0 && save_text != text_elt.data('text')) {
-      $.post('/post/' + id, { 'post': save_text }, function(data) {
+    if ($(this).val() == 'Save' && save_text.length > 0 && save_text != text_elt.data('text')) {
+      $.post('/post/' + id, { 'post': save_text, forward: 1 }, function(data) {
         text_elt.html(data.post_html);
         text_elt.remove('html');
         text_elt.remove('text');
@@ -39,9 +41,9 @@ $(function() {
     }
     else {
       text_elt.html(text_elt.data('html'));
+      // Unpause posts once finished editing
+      $.post('/post/' + id, { forward: 1 });
     }
-    // Unpause posts once finished editing
-    $.post('/post/' + id, { forward: 1 });
     // Redisplay controls
     $('.post_controls', div).show();
     return false;
@@ -146,8 +148,8 @@ $(function() {
   });
 
   // Show/hide post_form
-  $('#post_form_hide').click(function() {
-    $(this).parent().hide();
+  $('.post_cancel').click(function() {
+    $(this).parents('form:first').hide();
     $('#post_form_show').show();
     return false;
   });
