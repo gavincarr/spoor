@@ -112,7 +112,7 @@ sub _process_feed {
       # Update state
       $st->{published} = $entry->published;
       $st->{id} = $id;
-      $st->{title} = $entry->title;
+      $st->{title} = encode_utf8 $entry->title;
       $st->{title} =~ s/[\r\n]+/ /g;
       $self->{state_changed}++;
     }
