@@ -108,7 +108,8 @@ helper render_atom => sub {
     $feed->add_entry($entry);
   }
 
-  $self->render(format => 'xml', text => $feed->as_xml);
+  # Note XML::Atom encodes as utf-8, so render_data avoids double-encoding here
+  $self->render_data($feed->as_xml, format => 'xml');
 };
 
 helper render_rs => sub {
@@ -316,7 +317,7 @@ helper api_post => sub {
         text => "Missing 'post' or 'status parameter?");
   }
 
-  my $post_content = Encode::decode_utf8($text);
+  my $post_content = decode_utf8($text);
   my $post = $schema->resultset('Post')->create({
     post_raw => $post_content,
   }) or return $self->render(status => 500,
@@ -367,7 +368,7 @@ post '/post/:id' => sub {
   for my $p (keys %param_map) {
     my $val = $self->param($p);
     if (defined $val && $val ne '') {
-      $update{ $param_map{$p} } = Encode::decode_utf8( $val );
+      $update{ $param_map{$p} } = decode_utf8( $val );
     }
   }
   if (keys %update) {
