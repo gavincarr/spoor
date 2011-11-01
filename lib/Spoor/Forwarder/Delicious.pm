@@ -12,12 +12,8 @@ use YAML;
 use Spoor::Config;
 
 # Process entry, returning true on success (forwarded or skipped)
-sub process_entry {
-  my ($self, $entry) = @_;
-
-  my $post = $self->process_post($entry->title, $entry->content);
-  printf "[%s] %s, %s, %s\n", $entry->published, $post->{url}, $post->{tags}, $post->{desc} 
-    if $self->{verbose};
+sub forward_post {
+  my ($self, $post, $entry) = @_;
 
   # Skip posts without urls
   unless ($post->{url}) {

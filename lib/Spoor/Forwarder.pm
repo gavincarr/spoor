@@ -89,12 +89,21 @@ sub _process_feed {
 #   next if $st->{published} && $entry->published lt $st->{published};
 
     # Finish if next published date is in the future (for publish_delay handling)
-    last if $entry->published gt gmtime->strftime('%Y-%m-%dT%TZ');
+    if ($entry->published gt gmtime->strftime('%Y-%m-%dT%TZ')) {
+      printf STDERR "+ next item to publish is in the future, skipping: [%s] %s: %s\n",
+        $entry->{id} || '', $entry->{published} || '', $entry->{title} || ''
+          if $self->{verbose};
+      last;
+    }
 
     # New entry - process
     printf "+ processing new item: [%s] %s\n", $id, $entry->title || ''
       if $self->{verbose};
-    if ($self->process_entry( $entry )) {
+
+    my $post = $self->process_post($entry->title, $entry->content);
+    printf "[%s] %s\n", $entry->published, $post if ! ref $post && $self->{verbose};
+
+    if ($self->forward_post( $post, $entry )) {
       # Update state
       $st->{published} = $entry->published;
       $st->{id} = $id;
@@ -110,20 +119,10 @@ sub _process_feed {
     if $self->{state_changed} && ! $self->{noop};
 }
 
-# Process entry, returning true on success (forwarded or skipped)
-sub process_entry {
-  my ($self, $entry) = @_;
-
-  my $post = $self->process_post($entry->title, $entry->content);
-  printf "[%s] %s\n", $entry->published, $post if ! ref $post && $self->{verbose};
-
-  warn "Error: process_entry not overridden - unable to forward\n";
-  return 0;
-}
-
-# Process post content, returning the content to forward (usually a scalar)
+# Process post content, returning the content string to forward (a scalar)
 sub process_post {
   my ($self, $title, $content) = @_;
+
   if (my $pp = $self->{config}->{process_post}) {
     if (ref $pp && ref $pp eq 'ARRAY') {
       eval "\$title =~ $_" foreach @$pp;
@@ -132,7 +131,16 @@ sub process_post {
       eval "\$title =~ $pp";
     }
   }
+
   return $title;
+}
+
+# Process entry, returning true on success (indicating forwarded or skipped)
+# Should be overridden by subclasses
+sub forward_post {
+  my ($self, $post, $entry) = @_;
+  warn "Error: forward_post not overridden - unable to forward\n";
+  return 0;
 }
 
 sub run {

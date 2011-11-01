@@ -60,11 +60,8 @@ sub connect {
 }
 
 # Process entry, returning true on success (forwarded or skipped)
-sub process_entry {
-  my ($self, $entry) = @_;
-
-  my $post = $self->process_post($entry->title, $entry->content);
-  printf "[%s] %s\n", $entry->published, $post if $self->{verbose};
+sub forward_post {
+  my ($self, $post, $entry) = @_;
 
   unless ($self->{noop}) {
     $self->connect;
