@@ -15,8 +15,10 @@ environment, including Mac OSX, with minor modifications.
    >= 1.99 requires perl >= 5.10.1, so if you're running an older perl (debian,
    CentOS 5, etc.), you may want to install an older Mojolicious (e.g. 1.90).
 
+      Encode >= 2.43
       Mojolicious
       Mojolicious::Plugin::BasicAuth
+      DBD::SQLite
       Exporter::Lite
       Config::Tiny
       XML::Atom
@@ -24,7 +26,6 @@ environment, including Mac OSX, with minor modifications.
       LWP
       LWP::Protocol::https
       YAML
-      DBD::SQLite
       Lingua::EN::Inflect
       Regexp::Common::microsyntax
       Net::Twitter          (if you want to forward to twitter/identi.ca)

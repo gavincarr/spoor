@@ -10,7 +10,7 @@ use strict;
 use File::Basename;
 use Getopt::Long qw(:config no_ignore_case bundling);
 use Mojolicious::Lite;
-use Encode;
+use Encode 2.43;
 use XML::Atom;
 use XML::Atom::Feed;
 use Carp;
