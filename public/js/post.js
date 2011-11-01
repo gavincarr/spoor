@@ -1,6 +1,15 @@
 $(function() {
   $('.hide').hide();
 
+  // Post message
+  $('#post_submit').click(function() {
+    var form = $(this).parents('form:first');
+    var post_text = $('textarea', form).val();
+    if (post_text.length == 0) {
+      return false;
+    }
+  });
+
   // Convert post to textarea for edit
   $('div#content').delegate('.post_edit', 'click', function() {
     var div = $(this).parents('div:first');
