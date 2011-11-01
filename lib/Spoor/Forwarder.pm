@@ -8,6 +8,7 @@ package Spoor::Forwarder;
 
 use strict;
 use XML::Atom::Feed;
+use Encode 2.43;
 use URI;
 use Time::Piece;
 use YAML;
@@ -15,6 +16,9 @@ use Carp;
 
 use FindBin qw($Bin);
 use Spoor::Config;
+
+# Force utf-8 decoding on input
+$XML::Atom::ForceUnicode = 1;
 
 sub init {
   my ($self, %arg) = @_;
@@ -97,11 +101,12 @@ sub _process_feed {
     }
 
     # New entry - process
-    printf "+ processing new item: [%s] %s\n", $id, $entry->title || ''
+    printf STDERR "+ processing new item: [%s] %s\n", $id, $entry->title || ''
       if $self->{verbose};
 
     my $post = $self->process_post($entry->title, $entry->content);
-    printf "[%s] %s\n", $entry->published, $post if ! ref $post && $self->{verbose};
+    printf STDERR "+ processed: [%s] %s\n", $entry->published, $post
+      if ! ref $post && $self->{verbose};
 
     if ($self->forward_post( $post, $entry )) {
       # Update state

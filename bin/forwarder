@@ -30,5 +30,7 @@ usage if @ARGV;
 usage "Missing required --target argument\n" unless $target;
 $verbose = 1 if $noop;
 
+binmode STDERR, ":utf8";
+
 Spoor::ForwarderFactory->new(target => $target, noop => $noop, verbose => $verbose, count => $count)->run;
 
