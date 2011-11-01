@@ -11,6 +11,9 @@ sub connect {
   my %nt_config = (
     traits        => [ 'API::REST' ],
     identica      => 1,
+    source        => 'spoor',
+    clientname    => 'spoor',
+    clienturl     => 'https://github.com/gavincarr/spoor',
     $self->{config}->{endpoint} ? ( apiurl => $self->{config}->{endpoint} ) : (),
     %arg
   );
