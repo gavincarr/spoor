@@ -13,7 +13,7 @@ use Spoor::ForwarderFactory;
 
 sub usage {
   warn @_ if @_;
-  die "usage: " . basename($0) . " [-v] --target <config_section>\n";
+  die "usage: " . basename($0) . " [-v] [--noop] [--count <max>] --target <config_section>\n";
 }
 
 my $verbose = 0;
@@ -28,6 +28,7 @@ usage unless GetOptions(
 usage if $help;
 usage if @ARGV;
 usage "Missing required --target argument\n" unless $target;
+$verbose = 1 if $noop;
 
 Spoor::ForwarderFactory->new(target => $target, noop => $noop, verbose => $verbose, count => $count)->run;
 
