@@ -24,16 +24,18 @@ Status
 ------
 
 Services currently forwarded:
- - identi.ca/status.net
- - twitter
- - delicious
- - pinboard
+
+- identi.ca/status.net
+- twitter
+- delicious
+- pinboard
 
 TODO:
- - facebook
- - google+ (once they have an api)
- - diaspora?
- - others?
+
+- facebook
+- google+ (once they have an api)
+- diaspora?
+- others?
 
 
 Acknowledgements
