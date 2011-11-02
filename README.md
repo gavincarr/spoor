@@ -5,7 +5,7 @@ Introduction
 Spoor is a micro-blogging micro-service for personal use. It provides a
 simple twitter-like post api, and a lightweight web interface, including
 atom feeds. You'd typically run it on some server you control - no root
-access is required, and all posts go into a sqlite database.
+access is required; all posts go into a sqlite database.
 
 Spoor is intended as a personal micro-blogging hub - you post most/all
 of your stuff to it, some of which is intended only for particular
@@ -14,8 +14,8 @@ out to (multiple) endpoints, depending on how posts are hash-tagged.
 
 For instance, my standard configuration is to forward all my posts to
 identi.ca and twitter by default, and to forward urls to my bookmarking
-services (delicious and pinboard) if I add a #bm hashtag. Posts tagged
-#pri are private and don't get forwarded anywhere. There are also #i
+services (delicious and pinboard) if I add a #bm hashtag. Posts
+tagged #pri are private and don't get forwarded anywhere. There are also #i
 and #t tags if I want to limit a post to identi.ca or twitter,
 respectively.
 
