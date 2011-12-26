@@ -1,0 +1,2 @@
+#!/bin/bash
+morbo $(dirname $0)/../spoor --listen http://*:3007
