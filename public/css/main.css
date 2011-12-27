@@ -26,8 +26,11 @@ div#elsewhere {
   margin: 0 3px;
 }
 a#login {
-  padding-right: 5px;
+  padding: 0 5px;
   color: #999;
+}
+#geoicon {
+  padding: 0 5px;
 }
 
 img {

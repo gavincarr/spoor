@@ -175,4 +175,21 @@ $(function() {
   $('div#content').delegate('div.post', 'mouseleave', function() {
     $(this).find('a.post_link').hide();
   });
+
+  // Toggle geolocation
+  $('#geoicon').click(function() {
+    var geoicon = $(this);
+    var geostate = $(this).parent().find('#geostate');
+    if (geostate.text() == 'OFF') {
+      geoicon.find('img').attr('src', '/images/geo_off.png');
+      geoicon.attr('title', 'Turn geolocation off');
+      geostate.text('ON');
+    }
+    else {
+      geoicon.find('img').attr('src', '/images/geo_on.png');
+      geoicon.attr('title', 'Turn geolocation on');
+      geostate.text('OFF');
+    }
+    return false;
+  });
 });
