@@ -36,9 +36,10 @@ a.user, a.user:visited { color: #<%= $config->get('color_user') %>; }
 <h1><%== $config->get('avatar') ? '<img id="avatar" src="' . $config->get('avatar') . '">' : '' %><%= $title %></h1>
 <div id="topright">
 % if ($user) {
-<span id="geospan">Geolocation: <span id="geostate"><%= $geo ? 'ON' : 'OFF' %></span>
-<a id="geoicon" href="<%= $config->get('url') %>" title="Turn geolocation <%= $geo ? 'off' : 'on' %>"><img src="/images/geo_<%= $geo ? 'off' : 'on' %>.png"></a>
-</span>
+<a id="geo" href="<%= $config->get('url') %>" title="Turn geolocation <%= $geo ? 'off' : 'on' %>">
+Geolocation: <span id="geostate"><%= $geo ? 'ON' : 'OFF' %></span>
+<img id="geoicon" src="/images/geo_<%= $geo ? 'off' : 'on' %>.png">
+</a>
  | 
 <a id="login" href="<%= $config->get('url') %>/logout">Logout</a>
 % } else {

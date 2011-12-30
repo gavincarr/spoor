@@ -188,15 +188,16 @@ $(function() {
   });
 
   // Toggle geolocation
-  $('#geoicon').click(function() {
-    var geoicon = $(this);
-    var geostate = $(this).parent().find('#geostate');
+  $('#geo').click(function() {
+    var geo = $(this);
+    var geostate = $(this).find('#geostate');
+    var geoicon  = $(this).find('#geoicon');
     if (geostate.text() == 'OFF') {
       $.post('/session', { 'geo': 1 }, function(data) {
         $('#post_geo').val(1);
         geostate.text('ON');
-        geoicon.find('img').attr('src', '/images/geo_off.png');
-        geoicon.attr('title', 'Turn geolocation off');
+        geoicon.attr('src', '/images/geo_off.png');
+        geo.attr('title', 'Turn geolocation off');
         if ($('#post_position').text() == '' && navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(setPosition);
         }
@@ -206,8 +207,8 @@ $(function() {
       $.post('/session', { 'geo': 0 }, function(data) {
         $('#post_geo').val(0);
         geostate.text('OFF');
-        geoicon.find('img').attr('src', '/images/geo_on.png');
-        geoicon.attr('title', 'Turn geolocation on');
+        geoicon.attr('src', '/images/geo_on.png');
+        geo.attr('title', 'Turn geolocation on');
       });
     }
     return false;

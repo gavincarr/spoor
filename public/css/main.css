@@ -18,6 +18,15 @@ h1 {
   font-size: 0.85em;
   color: #999;
 }
+#topright a {
+  color: #999;
+}
+#geo {
+  margin: 0 5px;
+}
+#geoicon {
+  padding-left: 5px;
+}
 div#elsewhere {
   display: inline;
   padding-left: 5px;
@@ -28,9 +37,6 @@ div#elsewhere {
 a#login {
   padding: 0 5px;
   color: #999;
-}
-#geoicon {
-  padding: 0 5px;
 }
 
 img {
