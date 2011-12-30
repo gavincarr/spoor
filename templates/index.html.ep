@@ -5,9 +5,13 @@
 <form id="post_form" action="" method="post" style="display:none">
 <textarea id="post_data" name="post" rows="3" cols="70"></textarea>
 <div class="post_buttons">
+<span id="post_position"></span>
 <span id="post_chars" class="post_chars">0</span>
-<input id="post_submit" type="submit" value="Post">
-<input class="post_cancel" type="submit" value="Cancel">
+<input type="hidden" id="post_geo" name="post_geo" value="<%= session 'geo' %>">
+<input type="hidden" id="post_position_lat" name="post_position_lat">
+<input type="hidden" id="post_position_long" name="post_position_long">
+<input type="submit" id="post_submit" value="Post">
+<input type="submit" class="post_cancel" value="Cancel">
 </div><!-- post_buttons -->
 <a id="post_form_hide" class="post_cancel post_form_icon" href="/"><img src="/images/post_form_hide.png" title="hide post form" alt="hide post form" height="16" width="16"></a>
 </form>

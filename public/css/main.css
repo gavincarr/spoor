@@ -104,6 +104,12 @@ div.paused:hover {
   display: inline;
   position: relative;
 }
+#post_position {
+  color: #aaa;
+  font-size: 10px;
+  position: absolute;
+  top: 28px;
+}
 .post_chars {
   color: #ccc;
   font-size: 16px;
