@@ -58,6 +58,16 @@ __PACKAGE__->table("post");
   default_value: 0
   is_nullable: 1
 
+=head2 latitude
+
+  data_type: 'real'
+  is_nullable: 1
+
+=head2 longitude
+
+  data_type: 'real'
+  is_nullable: 1
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -79,6 +89,10 @@ __PACKAGE__->add_columns(
   { data_type => "tinyint", default_value => 1, is_nullable => 1 },
   "delete_b",
   { data_type => "tinyint", default_value => 0, is_nullable => 1 },
+  "latitude",
+  { data_type => "real", is_nullable => 1 },
+  "longitude",
+  { data_type => "real", is_nullable => 1 },
 );
 __PACKAGE__->set_primary_key("id");
 
@@ -100,8 +114,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07010 @ 2011-09-29 18:21:39
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:zunH90ZNbMzfbPDpPOOUUg
+# Created by DBIx::Class::Schema::Loader v0.07010 @ 2011-12-30 13:46:28
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:AF337bUknD7trlyNb3iDKA
 
 use Regexp::Common qw(URI microsyntax);
 use Time::Piece;
