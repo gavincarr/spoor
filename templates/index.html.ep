@@ -8,8 +8,8 @@
 <span id="post_position"></span>
 <span id="post_chars" class="post_chars">0</span>
 <input type="hidden" id="post_geo" name="post_geo" value="<%= session 'geo' %>">
-<input type="hidden" id="post_position_lat" name="post_position_lat">
-<input type="hidden" id="post_position_long" name="post_position_long">
+<input type="hidden" id="post_position_lat"  name="latitude">
+<input type="hidden" id="post_position_long" name="longitude">
 <input type="submit" id="post_submit" value="Post">
 <input type="submit" class="post_cancel" value="Cancel">
 </div><!-- post_buttons -->

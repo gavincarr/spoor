@@ -302,7 +302,7 @@ helper api_post => sub {
   my $content_type = $self->req->headers->content_type;
 
   # TODO: why aren't json bodies automatically deserialised into params?
-  my $text;
+  my ($text, $latitude, $longitude);
   if ($content_type =~ /\bjson$/) {
     my $params = $self->req->json
       or return $self->render(status => 403,
@@ -310,16 +310,26 @@ helper api_post => sub {
     $text = $params->{post} || $params->{status}
       or return $self->render(status => 403,
         json => { error => "Missing 'post' or 'status' parameter?" });
+    if ($params->{post_geo}) {
+      $latitude  = $params->{latitude};
+      $longitude = $params->{longitude};
+    }
   }
   else {
     $text = $self->param('post') || $self->param('status')
       or return $self->render(status => 403,
         text => "Missing 'post' or 'status parameter?");
+    if ($self->param('post_geo')) {
+      $latitude  = $self->param('latitude');
+      $longitude = $self->param('longitude');
+    }
   }
 
   my $post_content = decode_utf8($text);
   my $post = $schema->resultset('Post')->create({
-    post_raw => $post_content,
+    post_raw    => $post_content,
+    latitude    => $latitude,
+    longitude   => $longitude,
   }) or return $self->render(status => 500,
     json => { error => "Creating post failed" });
 
