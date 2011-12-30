@@ -398,6 +398,21 @@ del '/post/:id' => sub {
 };
 
 # -------------------------------------------------------------------------
+# Session routes
+#
+# POST /session - session updates
+#
+# Supported parameters: geo => 1 | 0
+#
+
+post '/session' => sub {
+  my $self = shift;
+  my $geo = $self->param('geo');
+  $self->session->{geo} = $geo if defined $geo;
+  $self->render(status => 200, json => { msg => 'OK' });
+};
+
+# -------------------------------------------------------------------------
 
 # Bump up default session expiration time to 3h
 app->sessions->default_expiration(3 * 3600)->secure($config->get('secure'));

@@ -181,14 +181,18 @@ $(function() {
     var geoicon = $(this);
     var geostate = $(this).parent().find('#geostate');
     if (geostate.text() == 'OFF') {
-      geoicon.find('img').attr('src', '/images/geo_off.png');
-      geoicon.attr('title', 'Turn geolocation off');
-      geostate.text('ON');
+      $.post('/session', { 'geo': 1 }, function(data) {
+        geostate.text('ON');
+        geoicon.find('img').attr('src', '/images/geo_off.png');
+        geoicon.attr('title', 'Turn geolocation off');
+      });
     }
     else {
-      geoicon.find('img').attr('src', '/images/geo_on.png');
-      geoicon.attr('title', 'Turn geolocation on');
-      geostate.text('OFF');
+      $.post('/session', { 'geo': 0 }, function(data) {
+        geostate.text('OFF');
+        geoicon.find('img').attr('src', '/images/geo_on.png');
+        geoicon.attr('title', 'Turn geolocation on');
+      });
     }
     return false;
   });
