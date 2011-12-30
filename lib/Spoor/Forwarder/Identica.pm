@@ -68,7 +68,13 @@ sub forward_post {
 
   unless ($self->{noop}) {
     $self->connect;
-    $self->{nt}->update({ status => $post })
+    my $params = { status => $post };
+    if (my $point = $entry->point) {
+      my ($lat, $long) = split /\s+/, $point;
+      $params->{lat}  = $lat;
+      $params->{long} = $long;
+    }
+    $self->{nt}->update($params)
       or die "Status update failed: " . $self->{nt}->get_error->{error} . "\n";
 
     return 1;

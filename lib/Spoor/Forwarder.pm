@@ -7,7 +7,7 @@
 package Spoor::Forwarder;
 
 use strict;
-use XML::Atom::Feed;
+use XML::Atom;
 use Encode 2.43;
 use URI;
 use Time::Piece;
@@ -16,6 +16,7 @@ use Carp;
 
 use FindBin qw($Bin);
 use Spoor::Config;
+use XML::Atom::Ext::GeoRSS;
 
 # Force utf-8 decoding on input
 $XML::Atom::ForceUnicode = 1;
