@@ -12,7 +12,6 @@ use Getopt::Long qw(:config no_ignore_case bundling);
 use Mojolicious::Lite;
 use Encode 2.43;
 use XML::Atom;
-use XML::Atom::Feed;
 use Carp;
 
 plugin 'basic_auth';
@@ -22,6 +21,7 @@ use lib "$Bin/lib";
 use lib 'lib';
 use Spoor::Config;
 use Spoor::Util qw(get_schema ts2iso8601 ts2iso8601_offset);
+use XML::Atom::Ext::GeoRSS;
 
 sub usage {
   warn @_ if @_;
@@ -104,6 +104,9 @@ helper render_atom => sub {
     # forward_flag == 2 means publish immediately, ignoring publish_delay
     elsif ($post->forward_flag == 2) {
       $entry->published(ts2iso8601($post->timestamp));
+    }
+    if (defined $post->latitude && defined $post->longitude) {
+      $entry->point(join(' ', $post->latitude, $post->longitude));
     }
     $feed->add_entry($entry);
   }
