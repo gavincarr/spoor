@@ -77,18 +77,26 @@ helper render_atom => sub {
 
   $XML::Atom::DefaultVersion = "1.0";
 
+  my $author = XML::Atom::Person->new;
+  $author->name($config->get('author_name') || 'Some Author');
+  $author->email($config->get('author_email')) if $config->get('author_email');
+  $author->uri($config->get('author_url'))     if $config->get('author_url');
+
   my $new_feed = sub {
     my $feed = XML::Atom::Feed->new;
     $feed->title($title);
     $feed->id($spoor_url . $path);
+    $feed->author($author);
     return $feed;
   };
   my $feed = $new_feed->();
 
+  my $max_updated = '';
   while (my $post = $rs->next) {
     # If we find a post that is paused, reset the feed and start again from the next post
     if (! $post->forward_flag) {
       $feed = $new_feed->();
+      $max_updated = '';
       next;
     }
 
@@ -105,11 +113,15 @@ helper render_atom => sub {
     elsif ($post->forward_flag == 2) {
       $entry->published(ts2iso8601($post->timestamp));
     }
+    $entry->updated($entry->published);
+    $max_updated = $entry->updated if $entry->updated gt $max_updated;
+
     if (defined $post->latitude && defined $post->longitude) {
       $entry->point(join(' ', $post->latitude, $post->longitude));
     }
     $feed->add_entry($entry);
   }
+  $feed->updated($max_updated) if $max_updated;
 
   # Note XML::Atom encodes as utf-8, so render_data avoids double-encoding here
   $self->render_data($feed->as_xml, format => 'xml');
