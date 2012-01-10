@@ -91,6 +91,13 @@ helper render_atom => sub {
   $link->href($feed->id);
   $feed->add_link($link);
 
+  if (my $hub = $config->get('pshb_hub')) {
+    my $pshb = XML::Atom::Link->new;
+    $pshb->rel('hub');
+    $pshb->href($hub);
+    $feed->add_link($pshb);
+  }
+
   $feed->author($author);
 
   my @entries;

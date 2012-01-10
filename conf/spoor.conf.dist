@@ -43,6 +43,8 @@ color_hashtag = e33
 color_grouptag = e70
 color_user = 390
 
+# PubSubHubbub (PSHB/PuSH) support
+#pshb_hub = http://pubsubhubbub.appspot.com/
 
 
 # -------------------------------------------------------------------------
