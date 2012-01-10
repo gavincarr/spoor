@@ -118,6 +118,7 @@ __PACKAGE__->has_many(
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:AF337bUknD7trlyNb3iDKA
 
 use Regexp::Common qw(URI microsyntax);
+use HTML::Entities qw(encode_entities);
 use Time::Piece;
 
 use Spoor::Config;
@@ -201,7 +202,7 @@ sub extract_and_create_hashtags {
     $post_processed =~ s/\s*$tag\b//g if $config->is_remove_tag($name);
   }
 
-  my $post_html = $self->post_raw;
+  my $post_html = encode_entities $self->post_raw;
   $post_html =~ s!$RE{URI}{HTTP}{-keep}{-scheme => qr/https?/}!<a class="url" href="$1">$1</a>!g;
   $post_html =~ s!$RE{microsyntax}{hashtag}{-keep}!<a class="tag" href="/tag/$3">$1</a>!og;
   $post_html =~ s!$RE{microsyntax}{grouptag}{-keep}!<a class="gtag" href="/gtag/$3">$1</a>!og;
