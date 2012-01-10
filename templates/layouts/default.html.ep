@@ -33,7 +33,7 @@ a.user, a.user:visited { color: #<%= $config->get('color_user') %>; }
 <body>
 <div id="content">
 <div id="header">
-<h1><%== $config->get('avatar') ? '<img id="avatar" src="' . $config->get('avatar') . '">' : '' %><%= $title %></h1>
+<h1><%== $config->get('avatar') ? '<img id="avatar" src="' . $config->get('avatar') . '" alt="[avatar]">' : '' %><%= $title %></h1>
 <div id="topright">
 % if ($user) {
 <a id="geo" href="<%= $config->get('url') %>" title="Turn geolocation <%= $geo ? 'off' : 'on' %>">
