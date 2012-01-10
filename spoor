@@ -125,7 +125,7 @@ helper render_atom => sub {
   $feed->add_entry($_) for @entries;
 
   # Note XML::Atom encodes as utf-8, so render_data avoids double-encoding here
-  $self->render_data($feed->as_xml, format => 'xml');
+  $self->render_data($feed->as_xml, format => 'atom');
 };
 
 helper render_rs => sub {
