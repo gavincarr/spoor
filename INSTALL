@@ -21,13 +21,14 @@ environment, including Mac OSX, with minor modifications.
       DBD::SQLite
       Exporter::Lite
       Config::Tiny
-      XML::Atom
-      XML::Atom::Feed
+      HTML::Entities
+      Lingua::EN::Inflect
       LWP
       LWP::Protocol::https
-      YAML
-      Lingua::EN::Inflect
       Regexp::Common::microsyntax
+      Time::Piece
+      XML::Atom
+      YAML
       Net::Twitter          (if you want to forward to twitter/identi.ca)
       Net::Delicious        (if you want to forward to delicious/pinboard)
 
