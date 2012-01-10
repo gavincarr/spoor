@@ -21,7 +21,7 @@
 % while (my $post = $rs->next) {
 %   my $tp = $post->ts2tp;
 <div id="post<%= $post->id %>" class="post<%= $post->forward_flag ? '' : ' paused' %>">
-<a name="<%= $post->id %>"></a>
+<a id="<%= $post->id %>"></a>
 <p class="post_text"><%== $post->post_html %></p>
 % if ($user) {
 <p class="post_controls">
