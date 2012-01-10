@@ -85,6 +85,12 @@ helper render_atom => sub {
   my $feed = XML::Atom::Feed->new;
   $feed->title($title);
   $feed->id($spoor_url . $path);
+
+  my $link = XML::Atom::Link->new;
+  $link->rel('self');
+  $link->href($feed->id);
+  $feed->add_link($link);
+
   $feed->author($author);
 
   my @entries;
