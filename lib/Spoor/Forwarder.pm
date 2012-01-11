@@ -69,7 +69,8 @@ sub _load_feed {
   my $url = $self->{spoor_config}->get('url')
     or die "Spoor config 'url' not found - cannot generate feed url\n";
   $url =~ s! /+ $ !!x;
-  my $feed_uri = URI->new("$url/tag/$self->{config}->{tag}.atom");
+  my $feed_uri = $self->{config}->{tag} ? "$url/tag/$self->{config}->{tag}.atom" : "$url/index.atom";
+  $feed_uri = URI->new($feed_uri);
   $feed_uri->userinfo($spoor_config->get('username') . ':' . $spoor_config->get('password'))
     if $spoor_config->get('username') && $spoor_config->get('password');
 

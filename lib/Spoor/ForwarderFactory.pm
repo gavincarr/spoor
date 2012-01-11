@@ -20,19 +20,19 @@ sub new {
   my $configfile = $arg{config} || "$Bin/../conf/forwarder.conf";
   -f $configfile
     or die "Cannot find required config file '$configfile'\n";
+  my $forwarder = ucfirst $target;
 
   # Load config
   my $config = Config::Tiny->read( $configfile );
 
   # Load target config section
-  my $config_section = $config->{ $target }
-    or die "No '$target' section found in '$configfile'\n";
+  if (my $config_section = $config->{ $target }) {
 
-  # Check required attributes
-  $config_section->{tag}
-    or die "Missing required 'tag' attribute in config [ $target ] section\n";
-  my $forwarder = $config_section->{forwarder}
-    or die "Missing required 'forwarder' attribute in config [ $target ] section\n";
+    # Check required attributes
+    $config_section->{tag}
+      or die "Missing required 'tag' attribute in config [ $target ] section\n";
+    $forwarder = $config_section->{forwarder} if $config_section->{forwarder};
+  }
 
   # Instantiate and return forwarder class
   my $f = eval "require Spoor::Forwarder::$forwarder; Spoor::Forwarder::${forwarder}->new";
