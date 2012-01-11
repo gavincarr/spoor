@@ -28,9 +28,8 @@ sub init {
 
   $self->{target}
     or croak "Missing required 'target' argument";
-  $self->{config}
-    or croak "Missing required 'config' argument";
 
+  $self->{config} ||= {};
   $self->{state_dir} = "$Bin/../var";
   $self->{state_file} = "$self->{state_dir}/forwarder_$self->{target}.dat";
 
