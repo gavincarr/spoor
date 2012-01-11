@@ -26,7 +26,8 @@ sub new {
   my $config = Config::Tiny->read( $configfile );
 
   # Load target config section
-  if (my $config_section = $config->{ $target }) {
+  my $config_section;
+  if ($config_section = $config->{ $target }) {
 
     # Check required attributes
     $config_section->{tag}
@@ -37,7 +38,7 @@ sub new {
   # Instantiate and return forwarder class
   my $f = eval "require Spoor::Forwarder::$forwarder; Spoor::Forwarder::${forwarder}->new";
   die $@ if $@;
-  $f->init( %arg, config => $config_section );
+  $f->init( %arg, ($config_section ? config => $config_section : ()) );
   return $f;
 }
 
