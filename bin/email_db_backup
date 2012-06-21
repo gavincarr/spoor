@@ -1,0 +1,16 @@
+#!/bin/bash
+
+die() {
+  echo $*
+  exit 1
+}
+
+test -n "$1" || die "usage; $(basename $0) <email> [<email2> ...]"
+
+SPOOR_HOME=$(dirname $(dirname $0))
+TODAY=$(date +%Y%m%d)
+
+sqlite3 $SPOOR_HOME/var/spoor.db .dump | gzip -c > $SPOOR_HOME/var/spoor-$TODAY.sql.gz
+
+mutt -s "Spoor database snapshot for $TODAY" -a $SPOOR_HOME/var/spoor-$TODAY.sql.gz -- $* </dev/null
+

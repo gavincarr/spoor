@@ -10,5 +10,8 @@ SPOOR_HOME=/path/to/spoor
 # PubSubHubbub also requires 'pshb_hub' to be set in spoor.conf
 #* * * * * $SPOOR_HOME/bin/forwarder --target PubSubHubbub
 
+# Take a daily dump of the spoor db and mail it off somewhere
+#50 0 * * * sqlite3 $SPOOR_HOME/bin/email_db_backup someone@example.com
+
 # vim:ft=crontab
 
