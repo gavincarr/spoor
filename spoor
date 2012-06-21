@@ -6,10 +6,9 @@
 # - simple interfaces for post listing and display (html and atom)
 #
 
-use strict;
+use Mojolicious::Lite;
 use File::Basename;
 use Getopt::Long qw(:config no_ignore_case bundling);
-use Mojolicious::Lite;
 use Encode 2.43;
 use XML::Atom;
 use Carp;
