@@ -8,9 +8,11 @@ Build.bat
 MANIFEST.bak
 Notes
 TODO
-delta/applied/*
-public/images/avatar*
 conf/*.conf
+delta/applied/*
+log
+public/images/avatar*
+var/*bak
 var/*db
 var/*dat
 hypnotoad.pid
