@@ -15,8 +15,8 @@ out to (multiple) endpoints, depending on how posts are hash-tagged.
 For instance, my standard configuration is to forward all my posts to
 identi.ca and twitter by default, and to forward urls to my bookmarking
 services (delicious and pinboard) if I add a #bm hashtag. Posts
-tagged #pri are private and don't get forwarded anywhere. There are also #i
-and #t tags if I want to limit a post to identi.ca or twitter,
+tagged #pri are private and don't get forwarded anywhere. There are also
+#i and #t tags if I want to limit a post to identi.ca or twitter,
 respectively.
 
 

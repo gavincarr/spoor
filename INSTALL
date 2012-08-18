@@ -19,8 +19,10 @@ environment, including Mac OSX, with minor modifications.
       Mojolicious
       Mojolicious::Plugin::BasicAuth
       DBD::SQLite
-      Exporter::Lite
+      DBIx::Class
+      DBIx::Class::Schema::Loader
       Config::Tiny
+      Exporter::Lite
       HTML::Entities
       Lingua::EN::Inflect
       LWP
