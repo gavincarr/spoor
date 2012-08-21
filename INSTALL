@@ -33,6 +33,7 @@ environment, including Mac OSX, with minor modifications.
       YAML
       Net::Twitter          (if you want to forward to twitter/identi.ca)
       Net::Delicious        (if you want to forward to delicious/pinboard)
+      HTML::Tree            (if you want to forward to delicious/pinboard)
       Net::PubSubHubbub::Publisher (if you want PSHB support)
 
 
