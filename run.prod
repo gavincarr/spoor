@@ -1,0 +1,6 @@
+#!/bin/bash
+
+exec 2>&1
+export MOJO_MODE=production
+exec start_server --port 3007 -- starman --workers 8 ./spoor
+
