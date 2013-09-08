@@ -12,6 +12,7 @@ conf/*.conf
 delta/applied/*
 log
 public/images/avatar*
+service
 var/*bak
 var/*db
 var/*dat
