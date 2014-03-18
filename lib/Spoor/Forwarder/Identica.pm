@@ -3,13 +3,12 @@ package Spoor::Forwarder::Identica;
 use strict;
 use base 'Spoor::Forwarder';
 
-use Net::Twitter::Lite;
+use Net::Twitter::Lite::WithAPIv1_1;
 
 sub connect {
   my ($self, %arg) = @_;
 
   my %nt_config = (
-    traits              => [ 'API::REST' ],
     identica            => 1,
     source              => 'spoor',
     clientname          => 'spoor',
@@ -30,10 +29,11 @@ sub connect {
     push @{$nt_config{traits}}, 'OAuth';
     $nt_config{consumer_key}    = $self->{config}->{spoor_oauth_key};
     $nt_config{consumer_secret} = $self->{config}->{spoor_oauth_secret};
+    $nt_config{ssl} = 1;
     $oauth = 1;
   }
 
-  $self->{nt} ||= Net::Twitter::Lite->new( %nt_config )
+  $self->{nt} ||= Net::Twitter::Lite::WithAPIv1_1->new( %nt_config )
     or die "Cannot instantiate Net::Twitter::Lite object: $!";
 
   return unless $oauth;
