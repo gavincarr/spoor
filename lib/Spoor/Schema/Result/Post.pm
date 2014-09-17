@@ -1,17 +1,21 @@
+use utf8;
 package Spoor::Schema::Result::Post;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
+
+=head1 NAME
+
+Spoor::Schema::Result::Post
+
+=cut
 
 use strict;
 use warnings;
 
 use base 'DBIx::Class::Core';
 
-
-=head1 NAME
-
-Spoor::Schema::Result::Post
+=head1 TABLE: C<post>
 
 =cut
 
@@ -94,6 +98,17 @@ __PACKAGE__->add_columns(
   "longitude",
   { data_type => "real", is_nullable => 1 },
 );
+
+=head1 PRIMARY KEY
+
+=over 4
+
+=item * L</id>
+
+=back
+
+=cut
+
 __PACKAGE__->set_primary_key("id");
 
 =head1 RELATIONS
@@ -113,29 +128,25 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 tags
 
-# Created by DBIx::Class::Schema::Loader v0.07010 @ 2011-12-30 13:46:28
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:AF337bUknD7trlyNb3iDKA
+Type: many_to_many
+
+Composing rels: L</post_tags> -> tag
+
+=cut
+
+__PACKAGE__->many_to_many("tags", "post_tags", "tag");
+
+
+# Created by DBIx::Class::Schema::Loader v0.07040 @ 2014-09-17 11:58:57
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Eh3EVXZDAoaI3/BK0ewWmQ
 
 use Regexp::Common qw(URI microsyntax);
 use HTML::Entities qw(encode_entities);
 use Time::Piece;
 
 use Spoor::Config;
-
-=head2 tags
-
-Type: many_to_many
-
-Related object: L<Spoor::Schema::Result::Tag>
-
-=cut
-
-__PACKAGE__->many_to_many(
-  "tags",
-  "post_tags",
-  'tag',
-);
 
 # -------------------------------------------------------------------------
 # Methods

@@ -1,0 +1,25 @@
+#!/usr/bin/perl
+
+use strict;
+use DBIx::Class::Schema::Loader qw(make_schema_at);
+
+use FindBin qw($Bin);
+use lib "$Bin/../lib";
+
+make_schema_at(
+  'Spoor::Schema',
+  {
+    dump_directory          => "$Bin/../lib",
+    use_namespaces          => 1,
+    naming                  => 'current',
+    resultset_namespace     => 'ResultSet',
+    overwrite_modifications => 1,
+    exclude                 => qr/_old$/,
+    moniker_map             => {
+    },
+    rel_name_map            => {
+    },
+  },
+  [ "dbi:SQLite:dbname=$Bin/../var/spoor.db" ],
+);
+

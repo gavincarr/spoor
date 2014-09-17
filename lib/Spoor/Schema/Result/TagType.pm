@@ -1,17 +1,21 @@
+use utf8;
 package Spoor::Schema::Result::TagType;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
+
+=head1 NAME
+
+Spoor::Schema::Result::TagType
+
+=cut
 
 use strict;
 use warnings;
 
 use base 'DBIx::Class::Core';
 
-
-=head1 NAME
-
-Spoor::Schema::Result::TagType
+=head1 TABLE: C<tag_type>
 
 =cut
 
@@ -37,6 +41,17 @@ __PACKAGE__->add_columns(
   "description",
   { data_type => "text", is_nullable => 0 },
 );
+
+=head1 PRIMARY KEY
+
+=over 4
+
+=item * L</id>
+
+=back
+
+=cut
+
 __PACKAGE__->set_primary_key("id");
 
 =head1 RELATIONS
@@ -57,8 +72,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07010 @ 2011-09-28 17:32:04
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:FXGxhKa7qBfu3vrea26T+A
+# Created by DBIx::Class::Schema::Loader v0.07040 @ 2014-09-17 11:57:42
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:oEBKfEwk34clcm5DZ80lIw
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration

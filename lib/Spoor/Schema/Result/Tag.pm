@@ -1,17 +1,21 @@
+use utf8;
 package Spoor::Schema::Result::Tag;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
+
+=head1 NAME
+
+Spoor::Schema::Result::Tag
+
+=cut
 
 use strict;
 use warnings;
 
 use base 'DBIx::Class::Core';
 
-
-=head1 NAME
-
-Spoor::Schema::Result::Tag
+=head1 TABLE: C<tag>
 
 =cut
 
@@ -46,7 +50,33 @@ __PACKAGE__->add_columns(
   "tag",
   { data_type => "text", is_nullable => 0 },
 );
+
+=head1 PRIMARY KEY
+
+=over 4
+
+=item * L</id>
+
+=back
+
+=cut
+
 __PACKAGE__->set_primary_key("id");
+
+=head1 UNIQUE CONSTRAINTS
+
+=head2 C<type_tag_unique>
+
+=over 4
+
+=item * L</type>
+
+=item * L</tag>
+
+=back
+
+=cut
+
 __PACKAGE__->add_unique_constraint("type_tag_unique", ["type", "tag"]);
 
 =head1 RELATIONS
@@ -78,27 +108,21 @@ __PACKAGE__->belongs_to(
   "type",
   "Spoor::Schema::Result::TagType",
   { id => "type" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 0, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
-
-
-# Created by DBIx::Class::Schema::Loader v0.07010 @ 2011-09-28 17:32:04
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:qjvWdEuHFpc9jJq17SLqPw
-
 
 =head2 posts
 
 Type: many_to_many
 
-Related object: L<Spoor::Schema::Result::Post>
+Composing rels: L</post_tags> -> post
 
 =cut
 
-__PACKAGE__->many_to_many(
-  "posts",
-  "post_tags",
-  'post',
-);
+__PACKAGE__->many_to_many("posts", "post_tags", "post");
 
+
+# Created by DBIx::Class::Schema::Loader v0.07040 @ 2014-09-17 11:58:57
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:hO4fmTCRJiH0w79+fPWPiA
 
 1;
