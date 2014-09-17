@@ -10,9 +10,9 @@ Notes
 TODO
 conf/*.conf
 delta/applied/*
-log
+supervise
+@*
 public/images/avatar*
-service
 var/*bak
 var/*db
 var/*dat
